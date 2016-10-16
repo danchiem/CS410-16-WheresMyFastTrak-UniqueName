@@ -1,0 +1,38 @@
+* {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html, body{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+#map{
+  width: 75%;
+  height: 100%;
+  position:  relative;
+  float:  right;
+}
+.panel{
+	background: red; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#673AB7, #2196F3); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#673AB7, #2196F3); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#673AB7, #2196F3); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#673AB7, #2196F3); /* Standard syntax */
+	position:  relative;
+	height:  100%;
+	width:  25%;
+	color:  black;
+	float:  left;
+	padding:  20px;
+	display:  flex;
+  	justify-content: center;
+  	align-items: flex-start;
+}
+.panel img{
+	width:  50%;
+}
+.clear{
+  clear: both;
+}
