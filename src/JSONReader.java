@@ -1,3 +1,10 @@
+package edu.ccsu.cs410.uniqueteam.ctfasttrakproject
+
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.ParseException;
+import org.json.simple.parser.JSONParser;
+
 public class JSONReader {
 	private static JSONReader instance = null;
 
@@ -11,10 +18,10 @@ public class JSONReader {
 		return instance;
 	}
 
-	//public JSONArray(?) getJSONFile(URL url) 
+	//public JSONObject[](?) getJSONFile(URL url) 
 	//{
 	//	add code that will take the JSON file from URL and return a 
-	// 	JSONArray(?) which data from the file can be put into Bus Object
+	// 	JSONObject array for each bus which data from the file can be put into Bus Object
 	//	and BusStop object
-	//} --Need to do--
+	//} <--Need to do-->
 }

@@ -1,3 +1,6 @@
+
+package edu.ccsu.cs410.uniqueteam.ctfasttrakproject
+
 public class Bus {
 	
 	private int busId;
@@ -16,28 +19,27 @@ public class Bus {
 		this.schedule = schedule;
 	}
 
-	public double[] getPosition()
-	{
+	public int getBusId() {
+		return busId;
+	}
+
+	public double[] getPosition() {
 		return position;
 	}
 
-	public BusStop getCurrentStop()
-	{
+	public BusStop getCurrentStop() {
 		return currentStop;
 	}
 
-	public BusStop[] getNextStops()
-	{
+	public BusStop[] getNextStops()	{
 		return nextStops;
 	}
 
-	public int getRouteId()
-	{
+	public int getRouteId()	{
 		return routeId;
 	}
 
-	public int getSchedule()
-	{
+	public int getSchedule() {
 		return schedule;
 	}
 }
