@@ -1,0 +1,1306 @@
+{
+  "entity": [
+    {
+      "alert": null,
+      "id": "A71",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.582386,
+          "longitude": -72.8988647
+        },
+        "timestamp": 1477613472,
+        "trip": {
+          "route_id": "8534",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "907451"
+        },
+        "vehicle": {
+          "id": "2071",
+          "label": "A71"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "A81",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7632179,
+          "longitude": -72.68432
+        },
+        "timestamp": 1477613469,
+        "trip": {
+          "route_id": "8534",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "907431"
+        },
+        "vehicle": {
+          "id": "2081",
+          "label": "A81"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1431",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7239342,
+          "longitude": -72.66766
+        },
+        "timestamp": 1477613485,
+        "trip": {
+          "route_id": "8479",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "901396"
+        },
+        "vehicle": {
+          "id": "2431",
+          "label": "1431"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1432",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.81683,
+          "longitude": -72.71318
+        },
+        "timestamp": 1477613465,
+        "trip": {
+          "route_id": "8480",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "901546"
+        },
+        "vehicle": {
+          "id": "2432",
+          "label": "1432"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1434",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7408676,
+          "longitude": -72.72172
+        },
+        "timestamp": 1477613493,
+        "trip": {
+          "route_id": "8480",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "901547"
+        },
+        "vehicle": {
+          "id": "2434",
+          "label": "1434"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1436",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.69524,
+          "longitude": -72.76397
+        },
+        "timestamp": 1477613465,
+        "trip": {
+          "route_id": "8478",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "901236"
+        },
+        "vehicle": {
+          "id": "2436",
+          "label": "1436"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1437",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.75726,
+          "longitude": -72.68235
+        },
+        "timestamp": 1477613488,
+        "trip": {
+          "route_id": "8481",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "901831"
+        },
+        "vehicle": {
+          "id": "2437",
+          "label": "1437"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1438",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.76032,
+          "longitude": -72.6820755
+        },
+        "timestamp": 1477613466,
+        "trip": {
+          "route_id": "8481",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "901795"
+        },
+        "vehicle": {
+          "id": "2438",
+          "label": "1438"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1441",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.670845,
+          "longitude": -72.86934
+        },
+        "timestamp": 1477613488,
+        "trip": {
+          "route_id": "8474",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "900630"
+        },
+        "vehicle": {
+          "id": "2441",
+          "label": "1441"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1444",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.69495,
+          "longitude": -72.77201
+        },
+        "timestamp": 1477613484,
+        "trip": {
+          "route_id": "8477",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "901120"
+        },
+        "vehicle": {
+          "id": "2444",
+          "label": "1444"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1448",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.701622,
+          "longitude": -72.77479
+        },
+        "timestamp": 1477613470,
+        "trip": {
+          "route_id": "8477",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "901035"
+        },
+        "vehicle": {
+          "id": "2448",
+          "label": "1448"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1449",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7645035,
+          "longitude": -72.6086
+        },
+        "timestamp": 1477613491,
+        "trip": {
+          "route_id": "8476",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "900896"
+        },
+        "vehicle": {
+          "id": "2449",
+          "label": "1449"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1450",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.76521,
+          "longitude": -72.6938248
+        },
+        "timestamp": 1477613480,
+        "trip": {
+          "route_id": "8476",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "900827"
+        },
+        "vehicle": {
+          "id": "2450",
+          "label": "1450"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1451",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.67508,
+          "longitude": -72.94634
+        },
+        "timestamp": 1477613331,
+        "trip": {
+          "route_id": "8474",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "900661"
+        },
+        "vehicle": {
+          "id": "2451",
+          "label": "1451"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1453",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.76417,
+          "longitude": -72.67376
+        },
+        "timestamp": 1477613480,
+        "trip": {
+          "route_id": "8477",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "901119"
+        },
+        "vehicle": {
+          "id": "2453",
+          "label": "1453"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1456",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.6957664,
+          "longitude": -72.7547
+        },
+        "timestamp": 1477613467,
+        "trip": {
+          "route_id": "8476",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "900894"
+        },
+        "vehicle": {
+          "id": "2456",
+          "label": "1456"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1464",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.66871,
+          "longitude": -72.78033
+        },
+        "timestamp": 1477613472,
+        "trip": {
+          "route_id": "8473",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "900300"
+        },
+        "vehicle": {
+          "id": "2464",
+          "label": "1464"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1465",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.66878,
+          "longitude": -72.77958
+        },
+        "timestamp": 1477613483,
+        "trip": {
+          "route_id": "8473",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "900301"
+        },
+        "vehicle": {
+          "id": "2465",
+          "label": "1465"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1469",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.76035,
+          "longitude": -72.70116
+        },
+        "timestamp": 1477613463,
+        "trip": {
+          "route_id": "8473",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "900415"
+        },
+        "vehicle": {
+          "id": "2469",
+          "label": "1469"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1472",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.76558,
+          "longitude": -72.67349
+        },
+        "timestamp": 1477613471,
+        "trip": {
+          "route_id": "8473",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "900299"
+        },
+        "vehicle": {
+          "id": "2472",
+          "label": "1472"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1476",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.5399361,
+          "longitude": -73.01359
+        },
+        "timestamp": 1477613479,
+        "trip": {
+          "route_id": "8534",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "907430"
+        },
+        "vehicle": {
+          "id": "2476",
+          "label": "1476"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "712",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7668076,
+          "longitude": -72.5715256
+        },
+        "timestamp": 1477613478,
+        "trip": {
+          "route_id": "8476",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "900891"
+        },
+        "vehicle": {
+          "id": "2712",
+          "label": "712"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "713",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.76805,
+          "longitude": -72.68746
+        },
+        "timestamp": 1477613480,
+        "trip": {
+          "route_id": "8474",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "900638"
+        },
+        "vehicle": {
+          "id": "2713",
+          "label": "713"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "714",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.6992,
+          "longitude": -72.65575
+        },
+        "timestamp": 1477613469,
+        "trip": {
+          "route_id": "8520",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "907082"
+        },
+        "vehicle": {
+          "id": "2721",
+          "label": "714"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "515",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.8172531,
+          "longitude": -72.71135
+        },
+        "timestamp": 1477613486,
+        "trip": {
+          "route_id": "8505",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "906046"
+        },
+        "vehicle": {
+          "id": "2736",
+          "label": "515"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "518",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.8027,
+          "longitude": -72.6573639
+        },
+        "timestamp": 1477613491,
+        "trip": {
+          "route_id": "8494",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "904332"
+        },
+        "vehicle": {
+          "id": "2739",
+          "label": "518"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "529",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.86779,
+          "longitude": -72.4328156
+        },
+        "timestamp": 1477613492,
+        "trip": {
+          "route_id": "8507",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "906368"
+        },
+        "vehicle": {
+          "id": "2750",
+          "label": "529"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "536",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.76663,
+          "longitude": -72.67215
+        },
+        "timestamp": 1477613474,
+        "trip": {
+          "route_id": "8510",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "906675"
+        },
+        "vehicle": {
+          "id": "2757",
+          "label": "536"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "538",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7785149,
+          "longitude": -72.62431
+        },
+        "timestamp": 1477613485,
+        "trip": {
+          "route_id": "8507",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "906367"
+        },
+        "vehicle": {
+          "id": "2759",
+          "label": "538"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "540",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.77082,
+          "longitude": -72.67462
+        },
+        "timestamp": 1477613473,
+        "trip": {
+          "route_id": "8492",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "903753"
+        },
+        "vehicle": {
+          "id": "2761",
+          "label": "540"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "545",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7642365,
+          "longitude": -72.67414
+        },
+        "timestamp": 1477613482,
+        "trip": {
+          "route_id": "8500",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "905477"
+        },
+        "vehicle": {
+          "id": "2766",
+          "label": "545"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "776",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7683,
+          "longitude": -72.67316
+        },
+        "timestamp": 1477613482,
+        "trip": {
+          "route_id": "8522",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "907131"
+        },
+        "vehicle": {
+          "id": "2785",
+          "label": "776"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "719",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7555923,
+          "longitude": -72.7632141
+        },
+        "timestamp": 1477613463,
+        "trip": {
+          "route_id": "8499",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "905342"
+        },
+        "vehicle": {
+          "id": "2796",
+          "label": "719"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "723",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7653961,
+          "longitude": -72.67343
+        },
+        "timestamp": 1477613472,
+        "trip": {
+          "route_id": "8502",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "905726"
+        },
+        "vehicle": {
+          "id": "2800",
+          "label": "723"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "725",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7636147,
+          "longitude": -72.6741257
+        },
+        "timestamp": 1477613484,
+        "trip": {
+          "route_id": "8502",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "905698"
+        },
+        "vehicle": {
+          "id": "2802",
+          "label": "725"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "726",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.6699562,
+          "longitude": -72.71716
+        },
+        "timestamp": 1477613465,
+        "trip": {
+          "route_id": "8502",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "905692"
+        },
+        "vehicle": {
+          "id": "2803",
+          "label": "726"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "734",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7678566,
+          "longitude": -72.67302
+        },
+        "timestamp": 1477613483,
+        "trip": {
+          "route_id": "8484",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "902500"
+        },
+        "vehicle": {
+          "id": "2811",
+          "label": "734"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "735",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.8100853,
+          "longitude": -72.61299
+        },
+        "timestamp": 1477613490,
+        "trip": {
+          "route_id": "8527",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "907255"
+        },
+        "vehicle": {
+          "id": "2812",
+          "label": "735"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "736",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7095337,
+          "longitude": -72.69958
+        },
+        "timestamp": 1477613472,
+        "trip": {
+          "route_id": "8491",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "903610"
+        },
+        "vehicle": {
+          "id": "2813",
+          "label": "736"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "746",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7656,
+          "longitude": -72.67365
+        },
+        "timestamp": 1477613475,
+        "trip": {
+          "route_id": "8483",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "902351"
+        },
+        "vehicle": {
+          "id": "2825",
+          "label": "746"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "752",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.76603,
+          "longitude": -72.67146
+        },
+        "timestamp": 1477613479,
+        "trip": {
+          "route_id": "8536",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "907655"
+        },
+        "vehicle": {
+          "id": "2831",
+          "label": "752"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1503",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7250175,
+          "longitude": -72.76133
+        },
+        "timestamp": 1477613468,
+        "trip": {
+          "route_id": "8479",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "901414"
+        },
+        "vehicle": {
+          "id": "2846",
+          "label": "1503"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "802",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.76154,
+          "longitude": -72.67459
+        },
+        "timestamp": 1477613484,
+        "trip": {
+          "route_id": "8495",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "904561"
+        },
+        "vehicle": {
+          "id": "2850",
+          "label": "802"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "320",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.77597,
+          "longitude": -72.5210342
+        },
+        "timestamp": 1477613484,
+        "trip": {
+          "route_id": "8510",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "906678"
+        },
+        "vehicle": {
+          "id": "2889",
+          "label": "320"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "401",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7049942,
+          "longitude": -72.66095
+        },
+        "timestamp": 1477613467,
+        "trip": {
+          "route_id": "8493",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "904083"
+        },
+        "vehicle": {
+          "id": "2898",
+          "label": "401"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "411",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.665966,
+          "longitude": -72.7786255
+        },
+        "timestamp": 1477613488,
+        "trip": {
+          "route_id": "8488",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "903385"
+        },
+        "vehicle": {
+          "id": "2908",
+          "label": "411"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "413",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.766346,
+          "longitude": -72.5962
+        },
+        "timestamp": 1477613474,
+        "trip": {
+          "route_id": "8508",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "906518"
+        },
+        "vehicle": {
+          "id": "2910",
+          "label": "413"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "414",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.8092842,
+          "longitude": -72.73195
+        },
+        "timestamp": 1477613485,
+        "trip": {
+          "route_id": "8497",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "904848"
+        },
+        "vehicle": {
+          "id": "2911",
+          "label": "414"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "429",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.76829,
+          "longitude": -72.5205
+        },
+        "timestamp": 1477613493,
+        "trip": {
+          "route_id": "8508",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "906460"
+        },
+        "vehicle": {
+          "id": "2927",
+          "label": "429"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "438",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.8088837,
+          "longitude": -72.53606
+        },
+        "timestamp": 1477613464,
+        "trip": {
+          "route_id": "8520",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "907099"
+        },
+        "vehicle": {
+          "id": "2936",
+          "label": "438"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "115",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.9249344,
+          "longitude": -72.6766052
+        },
+        "timestamp": 1477613468,
+        "trip": {
+          "route_id": "8482",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "901991"
+        },
+        "vehicle": {
+          "id": "2942",
+          "label": "115"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "212",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7838478,
+          "longitude": -72.6557541
+        },
+        "timestamp": 1477613282,
+        "trip": {
+          "route_id": "8509",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "906540"
+        },
+        "vehicle": {
+          "id": "2956",
+          "label": "212"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "213",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7663,
+          "longitude": -72.67271
+        },
+        "timestamp": 1477613477,
+        "trip": {
+          "route_id": "8536",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "908610"
+        },
+        "vehicle": {
+          "id": "2957",
+          "label": "213"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "230",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7558937,
+          "longitude": -72.67611
+        },
+        "timestamp": 1477613467,
+        "trip": {
+          "route_id": "8485",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "902737"
+        },
+        "vehicle": {
+          "id": "2974",
+          "label": "230"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1103",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7662277,
+          "longitude": -72.67353
+        },
+        "timestamp": 1477613465,
+        "trip": {
+          "route_id": "8499",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "905341"
+        },
+        "vehicle": {
+          "id": "2987",
+          "label": "1103"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1105",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7768478,
+          "longitude": -72.68228
+        },
+        "timestamp": 1477613489,
+        "trip": {
+          "route_id": "8494",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "904426"
+        },
+        "vehicle": {
+          "id": "2989",
+          "label": "1105"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1106",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.76534,
+          "longitude": -72.67396
+        },
+        "timestamp": 1477613478,
+        "trip": {
+          "route_id": "8487",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "903246"
+        },
+        "vehicle": {
+          "id": "2990",
+          "label": "1106"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1109",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7250824,
+          "longitude": -72.76132
+        },
+        "timestamp": 1477613467,
+        "trip": {
+          "route_id": "8499",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "905199"
+        },
+        "vehicle": {
+          "id": "2993",
+          "label": "1109"
+        }
+      }
+    },
+    {
+      "alert": null,
+      "id": "1110",
+      "trip_update": null,
+      "vehicle": {
+        "position": {
+          "latitude": 41.7583122,
+          "longitude": -72.7007
+        },
+        "timestamp": 1477613485,
+        "trip": {
+          "route_id": "8483",
+          "schedule_relationship": 0,
+          "start_date": "20161027",
+          "trip_id": "902352"
+        },
+        "vehicle": {
+          "id": "2994",
+          "label": "1110"
+        }
+      }
+    }
+  ],
+  "header": {
+    "incrementality": 0,
+    "timestamp": 1477613484
+  }
+}
