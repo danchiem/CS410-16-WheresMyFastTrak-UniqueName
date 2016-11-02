@@ -1,4 +1,4 @@
-var map;
+var map;  
 function initMap() {
 	var map = new google.maps.Map(document.getElementById('map'), {
 	  center: {lat: 41.6907, lng: -72.7665},
@@ -31,6 +31,6 @@ function initMap() {
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 	infoWindow.setPosition(pos);
 	infoWindow.setContent(browserHasGeolocation ?
-      'Error: The Geolocation service failed. This is because local files cant track location.' :
+      'Error: The Geolocation service failed. This is because local files cannot track location.' :
       'Error: Your browser doesn\'t support geolocation.');
 }
