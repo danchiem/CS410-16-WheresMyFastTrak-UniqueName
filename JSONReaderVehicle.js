@@ -18,5 +18,5 @@ function init()
 			jsonObjectAlert = jQuery.parseJSON(JSON.stringify(data));
 			console.log(jsonObjectAlert);
 		});
-		setTimeout("init()",5000);
+		setTimeout("init()", 10000);
 };
