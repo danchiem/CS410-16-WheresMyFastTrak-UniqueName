@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+        <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+    </head>
+    <body>
+        <script>
+            function PreviewText() {
+            var oFReader = new FileReader();
+            oFReader.readAsDataURL(document.getElementById("uploadText").files[0]);
+            oFReader.onload = function (oFREvent) {
+                document.getElementById("uploadTextValue").value = oFREvent.target.result; 
+                document.getElementById("obj").data = oFREvent.target.result;
+            };
+        };
+        jQuery(document).ready(function(){
+            $('#viewSource').click(function ()
+            {
+                var text = $('#uploadTextValue').val();
+                alert(text);
+                //here ajax
+            });
+        });
+        </script>
+        <object width="100%" height="400" data="" id="obj"></object>
+        <div>
+            <input type="hidden" id="uploadTextValue" name="uploadTextValue" value="" />
+            <input id="uploadText" style="width:120px" type="file" size="10"  onchange="PreviewText();" />
+        </div>
+        <a href="#" id="viewSource">Source file</a>
+    </body>
+</html>
