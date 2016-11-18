@@ -42,7 +42,7 @@ function initMap(){
 	}
 	loadBusStops(map);
 	getVehicleInfo(map);
-	setInterval(updatePositions, 30000);
+	setInterval(updatePositions, 1000);
 }
 
 function nextArrivingBus(busStopID){
