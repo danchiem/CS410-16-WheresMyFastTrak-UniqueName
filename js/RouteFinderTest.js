@@ -1,13 +1,16 @@
-function createFastestRoute() {
-
-	var origin = document.getElementById("userInput").value;
-	var destination = document.getElementById("userInput").value;
-
-	console.log(origin);
-	console.log(destination);
+window.onclick=function createFastestRoute() {
 
 	//get routeId number
     var routeId = searchTripUpdateForFastestRoute(destination, origin);
+	//var origin = document.getElementById("userInput").value;
+	//var destination = document.getElementById("userInput").value;
+	
+	var origin = '142 Jerome Ave. Burlington, CT 06013';
+	var destination = '1615 Stanley Street, New Britain, CT 06053';
+	
+	console.log(origin);
+	console.log(destination);
+
 
 	//stablish route by using the Id number, starting point and destination
 	makeRoute(routeId, findNearestStop( origin ), destination);
@@ -54,11 +57,12 @@ function findNearestStop(location) {
 	var myLatLng = locationToGeocode(location);
 	var dist = null;
 
-	for( var i = 0; i < jsonStops.entity.length; i++) {
-		var comp = computeDistanceBetween(myLatLng , jsonStops.entity[i].stop_position);
+	for( var i = 0; i < busStops.length; i++) {
+		var compLatLng = new google.maps.LatLng( {lat : busStops[i][2], lng : busStops[i][3]});
+		var comp = google.maps.geometry.spherical.computeDistanceBetween(myLatLng , compLatLng );
 		if( dist == null || dist > comp) {
 			dist = comp;
-			finalStop = jsonStops.entity[i].stop_id;
+			finalStop = busStops[i][1];
 		}
 	}
 
@@ -130,15 +134,15 @@ function makeRoute(routeId, origin, destination) {
 
 }
 
-function locationToGeocode(location) {
+function locationToGeocode(place) {
 	//convert location into lat and long position
 	var geocoder = new google.maps.Geocoder();
 	var myLatLng;
 	var finalStop;
-	geocoder.geocode( { 'address': address}, function(results, status) {
+	geocoder.geocode( { 'address': place}, function(results, status) {
 	if (status == google.maps.GeocoderStatus.OK) {
-    	var latitude = results[0].geometry.location.lat();
-    	var longitude = results[0].geometry.location.lng();
+    	var latitude = results[0].geometry.place.lat();
+    	var longitude = results[0].geometry.place.lng();
     	myLatLng = new google.maps.LatLng( {lat : latitude, lng : longitude});
     	} else {
     		alert('Error :' + status);
