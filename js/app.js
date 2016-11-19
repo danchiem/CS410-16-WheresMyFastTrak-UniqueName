@@ -8,6 +8,14 @@ var busStops = new Array(10000);
 var busStopMarkers = new Array(10000);
 var busStopInfos = new Array(10000);
 
+var tempBusStops = new Array (10000);
+var arrBusStops = new Array (10000);
+var tempJsonStopID = new Array (10000);
+var jsonStopID = []; // holds non-duplicates STOP-ID from trip_updates should be ~ 4000
+
+
+
+
 function initMap(){
   	var map = new google.maps.Map(document.getElementById('map'), {
 	  center: {lat: 41.6907, lng: -72.7665},
@@ -66,33 +74,143 @@ function nextArrivingBus(busStopID){
 	});
 	return nextBus;
 }
+// function getBusStopList(){
+    
+    // var i = 0;
+    // var j = 0;
+    // var index = 0;
+    
+    // // uses tempBusStops to hold stop_id
+    // for( i = 0; i < tempBusStops.length; i++){
+		// tempBusStops[i] = new Array(4); //stop_id, name, lat, long
+	// }
+    
+     // for( i = 0; i < busStops.length; i++){
+		// busStops[i] = new Array(4); //stop_id, name, lat, long
+	// }
+    
+    // //temp storing all bus stop info
+	// $.getJSON("./assets/files/stops.json", function(data){ 
+		// tempJsonStops = jQuery.parseJSON(JSON.stringify(data));
+        // for( i = 0; i < tempJsonStops.length; i++){
+            // tempBusStops[i][0] = tempJsonStops[i].stop_id;
+            // tempBusStops[i][1] = tempJsonStops[i].stop_name;
+			// tempBusStops[i][2] = tempJsonStops[i].stop_lat;
+			// tempBusStops[i][3] = tempJsonStops[i].stop_lon;
+        // }      
 
+        // $.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data){ // inner json call
+		// jsonTrips = jQuery.parseJSON(JSON.stringify(data));
+		// index = 0;
+        // for( i = 0; i < jsonTrips.entity.length; i++){
+			// for( j = 0; j < jsonTrips.entity[i].trip_update.stop_time_update.length; j++){
+                // tempJsonStopID[index] = jsonTrips.entity[i].trip_update.stop_time_update[j].stop_id;
+                // index++;
+                
+                
+            // }
+        // }
+    
+    // for(var i=0;i<tempJsonStopID.length;i++) // removes duplicates
+        // {
+        // var str=tempJsonStopID[i];
+        // if(jsonStopID.indexOf(str)==-1)
+            // {
+            // jsonStopID.push(str);
+            // }
+        // }
+           // for( i = 0; i < jsonStopID.length; i++){
+            // if( jsonStopID[i] == tempBusStops[i][0]){
+            // busStops[i][0] = tempBusStops[i].stop_id;
+            // busStops[i][1] = tempBusStops[i].stop_name;
+			// busStops[i][2] = tempBusStops[i].stop_lat;
+			// busStops[i][3] = tempBusStops[i].stop_lon;          
+            // }
+        // }
+        // console.log(tempBusStops);
+    
+       
+    // });
+ 
+        
+    // });
+
+// }
 function loadBusStops(thisMap){
-	for(var j = 0; j < busStops.length; j++){
-		busStops[j] = new Array(4); //stop_id, name, lat, long
+	
+    var index = 0;
+    
+    // uses tempBusStops to hold stop_id
+    for( var i = 0; i < tempBusStops.length; i++){
+		tempBusStops[i] = new Array(4); //stop_id, name, lat, long
 	}
-	$.getJSON("./assets/files/stops.json", function(data){
-		jsonStops = jQuery.parseJSON(JSON.stringify(data));
-		for(var i = 0; i < jsonStops.length; i++){
-			busStops[i][0] = jsonStops[i].stop_id;
-			busStops[i][1] = jsonStops[i].stop_name;
-			busStops[i][2] = jsonStops[i].stop_lat;
-			busStops[i][3] = jsonStops[i].stop_lon;
-			//var nextBusInfo = nextArrivingBus(busStops[i][0]);
-			var bsinfo = 		'<div id="content">'+
-					            '<div id="siteNotice">'+
-					            '</div>'+
-					            '<h1 id="firstHeading" class="firstHeading">Bus Stop ID: '+ busStops[i][0] +'</h1>'+
-					            '<div id="bodyContent">' +
-						            '<p>' +
-							            'Bus Stop Name: ' + busStops[i][1] + '<br>' +
-							            'Location (Lat / Long): ' + busStops[i][2] + ' / ' + busStops[i][3] + '<br>' +
-							            //'Next bus / time: ' + nextBusInfo[0] + ' / ' + nextBusInfo[1] + '<br>' +
-						            '</p>'+
-					            '</div>'+
-				            '</div>';
+    
+     for( var i = 0; i < busStops.length; i++){
+		busStops[i] = new Array(4); //stop_id, name, lat, long
+	}
+    
+    //temp storing all bus stop info
+	$.getJSON("./assets/files/stops.json", function(data){ 
+		tempJsonStops = jQuery.parseJSON(JSON.stringify(data));
+        for( var i = 0; i < tempJsonStops.length; i++){
+            tempBusStops[i][0] = tempJsonStops[i].stop_id;
+            tempBusStops[i][1] = tempJsonStops[i].stop_name;
+			tempBusStops[i][2] = tempJsonStops[i].stop_lat;
+			tempBusStops[i][3] = tempJsonStops[i].stop_lon;
+        }      
+
+        $.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data){ // inner json call
+		jsonTrips = jQuery.parseJSON(JSON.stringify(data));
+		index = 0;
+        for( var i = 0; i < jsonTrips.entity.length; i++){
+			for( j = 0; j < jsonTrips.entity[i].trip_update.stop_time_update.length; j++){
+                tempJsonStopID[index] = jsonTrips.entity[i].trip_update.stop_time_update[j].stop_id;
+                index++;
+                
+                
+            }
+        }
+    
+    for(var i=0;i<tempJsonStopID.length;i++) // removes duplicates
+        {
+        var str=tempJsonStopID[i];
+        if(jsonStopID.indexOf(str)==-1)
+            {
+            jsonStopID.push(str);
+            }
+        }
+        
+         index = 0;
+           for( var i = 0; i < jsonStopID.length; i++){
+            for( var j = 0; j < tempBusStops.length; j++){
+                if( jsonStopID[i] == tempBusStops[j][0]){
+                    
+                    busStops[index][0] = tempBusStops[j][0];
+                    busStops[index][1] = tempBusStops[j][1];
+                    busStops[index][2] = tempBusStops[j][2];
+                    busStops[index][3] = tempBusStops[j][3];
+                    index++;
+                }
+            }
+        }
+
+   
+    for( var i = 0; i < busStops.length; i++){        
+  
+			// var bsinfo = 		'<div id="content">'+
+					            // '<div id="siteNotice">'+
+					            // '</div>'+
+					            // '<h1 id="firstHeading" class="firstHeading">Bus Stop ID: '+ busStops[i][0] +'</h1>'+
+					            // '<div id="bodyContent">' +
+						            // '<p>' +
+							            // 'Bus Stop Name: ' + busStops[i][1] + '<br>' +
+							            // 'Location (Lat / Long): ' + busStops[i][2] + ' / ' + busStops[i][3] + '<br>' +
+							            // //'Next bus / time: ' + nextBusInfo[0] + ' / ' + nextBusInfo[1] + '<br>' +
+						            // '</p>'+
+					            // '</div>'+
+				            // '</div>';
 			busStopInfos[i] = new google.maps.InfoWindow({
-				content: bsinfo
+			//	content: bsinfo
 			});
 			busStopMarkers[i] = new google.maps.Marker({
 				map: thisMap,
@@ -109,7 +227,10 @@ function loadBusStops(thisMap){
 				}
 			}(i));
 		}
-	});
+           });
+ 
+        
+    });
 }
 
 function updatePositions(){
