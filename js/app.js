@@ -50,7 +50,7 @@ function initMap(){
 	}
 	loadBusStops(map);
 	getVehicleInfo(map);
-	setInterval(updatePositions, 1000);
+	setInterval(updatePositions, 30000);
 }
 
 function nextArrivingBus(busStopID){
@@ -137,24 +137,22 @@ function nextArrivingBus(busStopID){
 
 // }
 function loadBusStops(thisMap){
-
-    var i = 0;
-    var j = 0;
+	
     var index = 0;
     
     // uses tempBusStops to hold stop_id
-    for( i = 0; i < tempBusStops.length; i++){
+    for( var i = 0; i < tempBusStops.length; i++){
 		tempBusStops[i] = new Array(4); //stop_id, name, lat, long
 	}
     
-     for( i = 0; i < busStops.length; i++){
+     for( var i = 0; i < busStops.length; i++){
 		busStops[i] = new Array(4); //stop_id, name, lat, long
 	}
     
     //temp storing all bus stop info
 	$.getJSON("./assets/files/stops.json", function(data){ 
 		tempJsonStops = jQuery.parseJSON(JSON.stringify(data));
-        for( i = 0; i < tempJsonStops.length; i++){
+        for( var i = 0; i < tempJsonStops.length; i++){
             tempBusStops[i][0] = tempJsonStops[i].stop_id;
             tempBusStops[i][1] = tempJsonStops[i].stop_name;
 			tempBusStops[i][2] = tempJsonStops[i].stop_lat;
@@ -164,7 +162,7 @@ function loadBusStops(thisMap){
         $.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data){ // inner json call
 		jsonTrips = jQuery.parseJSON(JSON.stringify(data));
 		index = 0;
-        for( i = 0; i < jsonTrips.entity.length; i++){
+        for( var i = 0; i < jsonTrips.entity.length; i++){
 			for( j = 0; j < jsonTrips.entity[i].trip_update.stop_time_update.length; j++){
                 tempJsonStopID[index] = jsonTrips.entity[i].trip_update.stop_time_update[j].stop_id;
                 index++;
@@ -183,8 +181,8 @@ function loadBusStops(thisMap){
         }
         
          index = 0;
-           for( i = 0; i < jsonStopID.length; i++){
-            for( j = 0; j < tempBusStops.length; j++){
+           for( var i = 0; i < jsonStopID.length; i++){
+            for( var j = 0; j < tempBusStops.length; j++){
                 if( jsonStopID[i] == tempBusStops[j][0]){
                     
                     busStops[index][0] = tempBusStops[j][0];
