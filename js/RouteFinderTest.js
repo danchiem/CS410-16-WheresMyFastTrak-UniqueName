@@ -19,8 +19,8 @@ window.onclick=function createFastestRoute() {
 function searchTripUpdateForFastestRoute(searchVal, start) {
 	var routeId;
 	var closestStop = findNearestStop( start );
-	var stopsList;
-	var arrivalTimes;
+	var stopList = new Array();
+	var arrivalTimes = new Array();
 
 	//get trip_updates json file and search it for a starting bus stop and that it is unvisited, then checks if the destination is on the bus route after the starting point.
 	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data){
@@ -30,8 +30,8 @@ function searchTripUpdateForFastestRoute(searchVal, start) {
 				if(jsonTrips.entity[i].trip_update.stop_time_update[j].stop_id == closestStop && jsonTrips.entity[i].trip_update.stop_time_update[j].departure.time == null) {
 					for(var k = j; k < jsonTrips.entity[i].trip_update.stop_time_update.length; k++) {
 						if(jsonTrips.entity[i].trip_update.stop_time_update[k].stop_id == searchVal) {
-							stopsList.push(jsonTrips.entity[i].id);
-							arrivalTimes.push(jsonTrips.entity[i].stop_time_update[k].arrival.time);
+							stopList[i] = jsonTrips.entity[i].id;
+							arrivalTimes[i] = jsonTrips.entity[i].stop_time_update[k].arrival.time;
 							break;
 						}
 					}
@@ -41,11 +41,11 @@ function searchTripUpdateForFastestRoute(searchVal, start) {
 	});
 
 	//compare bus stops to find earliest arrive time
-	var comparison = arrivalTimes[0];
+	var comparison = 99999999999999;
 	for(var i = 0; i < arrivalTimes.length; i++) {
 		if(comparison > arrivalTimes[i]) {
 			comparison = arrivalTimes[i];
-			routeId = stopsList[i];
+			routeId = stopList[i];
 		}
 	}
 
@@ -55,13 +55,21 @@ function searchTripUpdateForFastestRoute(searchVal, start) {
 function findNearestStop(location) {
 	//find the closest bus stop
 	var myLatLng = locationToGeocode(location);
-	var dist = null;
+	var distLat = null;
+	var disLng = null;
+	var finalStop;
 
 	for( var i = 0; i < busStops.length; i++) {
-		var compLatLng = new google.maps.LatLng( {lat : busStops[i][2], lng : busStops[i][3]});
-		var comp = google.maps.geometry.spherical.computeDistanceBetween(myLatLng , compLatLng );
-		if( dist == null || dist > comp) {
-			dist = comp;
+		var compLatLng = new google.maps.LatLng( parseFloat(busStops[i][2]), parseFloat(busStops[i][3]) );
+		
+		if( distLat == null || distLng == null ) {
+			distLat = compLatLng.lat();
+			distLng = compLatLng.lng();
+		}
+			
+		if( distLat > compLatLng.lat() || distLng > compLatLng.lng() ) {
+			distLat = compLatLng.lat();
+			distLng = compLatLng.lng();
 			finalStop = busStops[i][1];
 		}
 	}
@@ -71,35 +79,38 @@ function findNearestStop(location) {
 }
 
 function makeRoute(routeId, origin, destination) {
-	var waypoints;
-	var waypointsCoord;
+	var waypoints = new Array();
+	var waypointsCoord = new Array();
 
 	//set marker for origin --- optional?
 
 	//set marker for destination --- optional?
 
 	//create array list of bus stops being traversed to reach destination
-	for(var i = 0; i < jsonTrips.entity[i].length; i++) {
-		for(var j = 0; j < jsonTrips.entity[i].trip_update.stop_time_update.length; j++) {
-			if(jsonTrips.entity[i].trip_update.stop_time_update[j].stop_id == origin && jsonTrips.entity[i].trip_update.stop_time_update[j].departure.time == null) {
-				for(var k = j; k < jsonTrips.entity[i].trip_update.stop_time_update.length; k++) {
-					if(jsonTrips.entity[i].trip_update.stop_time_update[k].stop_id != destination) {
-						waypoints.push( {location : jsonTrips.entity[i].trip_update.stop_time_update[k].stop_id });
-					} else {
-						waypoints.push( {location : jsonTrips.entity[i].trip_update.stop_time_update[k].stop_id });
-						break;
+	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data){
+		jsonTrips = $.parseJSON(JSON.stringify(data));
+		for(var i = 0; i < jsonTrips.entity[i].length; i++) {
+			for(var j = 0; j < jsonTrips.entity[i].trip_update.stop_time_update.length; j++) {
+				if(jsonTrips.entity[i].trip_update.stop_time_update[j].stop_id == origin && jsonTrips.entity[i].trip_update.stop_time_update[j].departure.time == null) {
+					for(var k = j; k < jsonTrips.entity[i].trip_update.stop_time_update.length; k++) {
+						if(jsonTrips.entity[i].trip_update.stop_time_update[k].stop_id != destination) {
+							waypoints.push( {location : jsonTrips.entity[i].trip_update.stop_time_update[k].stop_id });
+						} else {
+							waypoints.push( {location : jsonTrips.entity[i].trip_update.stop_time_update[k].stop_id });
+							break;
+						}
 					}
 				}
 			}
 		}
-	}
+	});
 
 	//Change from stop_id to lat and long position
 	var myLatLng = locationToGeocode(location);
 	for(var i = 0; i < waypoints.length; i++) {
 		for( var j = 0; j < busStops.length; j++) {
 			if(waypoint[i] == busStops[j][1])
-				myLatLng = new google.maps.LatLng( {lat : busStops[j][2], lng : busStops[j][3]});
+				myLatLng = new google.maps.LatLng( parseFloat(busStops[i][2]), parseFloat(busStops[i][3]) );
 				waypointsCoord.push(myLatLng);
 		}
 	}
@@ -114,8 +125,8 @@ function makeRoute(routeId, origin, destination) {
 	directionDisplay.setMap(map);
 	//build directions request
 	var request = {
-        origin: originAddress,
-        destination: destinationAddress,
+        origin: origin,
+        destination: destination,
         waypoints: waypointsCoord, //an array
         optimizeWaypoints: false, //false to use the order specified.
         travelMode: google.maps.DirectionsTravelMode.TRANSIT
@@ -141,9 +152,9 @@ function locationToGeocode(place) {
 	var finalStop;
 	geocoder.geocode( { 'address': place}, function(results, status) {
 	if (status == google.maps.GeocoderStatus.OK) {
-    	var latitude = results[0].geometry.place.lat();
-    	var longitude = results[0].geometry.place.lng();
-    	myLatLng = new google.maps.LatLng( {lat : latitude, lng : longitude});
+    	var latitude = results[0].geometry.location.lat();
+    	var longitude = results[0].geometry.location.lng();
+    	myLatLng = new google.maps.LatLng( parseFloat(latitude), parseFloat(longitude) );
     	} else {
     		alert('Error :' + status);
     	}
