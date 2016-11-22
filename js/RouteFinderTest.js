@@ -1,4 +1,4 @@
-window.onclick=function createFastestRoute() {
+window.onclick = function createFastestRoute() {
 
 	//get routeId number
     var routeId = searchTripUpdateForFastestRoute(destination, origin);

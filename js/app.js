@@ -1,21 +1,33 @@
 var map;
 
+$('#searchRoute').submit(function(e) {
+	e.preventDefault();
+	createFastestRoute();
+	return false;
+});
+
+var latlng;
+
+/**
+ * Bus/vehicle variables
+ */
 var buses = new Array(1000);
 var busmarkers = new Array(1000);
 var busInfos = new Array(1000);
 
-var busStops = new Array(10000);
-var busStopMarkers = new Array(10000);
-var busStopInfos = new Array(10000);
-
-var tempBusStops = new Array (10000);
-var arrBusStops = new Array (10000);
-var tempJsonStopID = new Array (10000);
-var jsonStopID = []; // holds non-duplicates STOP-ID from trip_updates should be ~ 4000
-
-
+/**
+ * Bus stop variables
+ */
+var busStops = new Array(5000);
+var busStopMarkers = new Array(5000);
+var busStopInfos = new Array(5000);
+var tempLocalStops = new Array (10000);
+var tempRealTimeStops = new Array(10000);
 
 
+/**
+ * Method below initializes the google map module that we will be using
+ */
 function initMap(){
   	var map = new google.maps.Map(document.getElementById('map'), {
 	  center: {lat: 41.6907, lng: -72.7665},
@@ -53,18 +65,23 @@ function initMap(){
 	setInterval(updatePositions, 30000);
 }
 
-function nextArrivingBus(busStopID){
+/**
+ * METHODS USED FOR BUS STOPS BELOW
+ * 
+ */
+
+function nextArrivingBus(busStopID, busStopName, busStopLat, busStopLong) {
 	var nextBus = new Array(2);
-	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data){
+		$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data) {
 		jsonTrips = jQuery.parseJSON(JSON.stringify(data));
-		for(var i = 0; i < jsonTrips.entity.length; i++){
-			for(var j = 0; j < jsonTrips.entity[i].trip_update.stop_time_update.length; j++){
-				if(jsonTrips.entity[i].trip_update.stop_time_update[j].stop_id == busStopID){
-					if(nextBus == null){
+		for (var i = 0; i < jsonTrips.entity.length; i++) {
+			for (var j = 0; j < jsonTrips.entity[i].trip_update.stop_time_update.length; j++) {
+				if (jsonTrips.entity[i].trip_update.stop_time_update[j].stop_id == busStopID) {
+					if (nextBus == undefined || nextBus.length == 0) {
 						nextBus[0] = jsonTrips.entity[i].trip_update.vehicle.id;
 						nextBus[1] = jsonTrips.entity[i].trip_update.stop_time_update[j].arrival.time;
 					}
-					else if(jsonTrips.entity[i].trip_update.stop_time_update[j].arrival.time < nextBus[1]){
+					else if (jsonTrips.entity[i].trip_update.stop_time_update[j].arrival.time < nextBus[1]) {
 						nextBus[0] = jsonTrips.entity[i].trip_update.vehicle.id;
 						nextBus[1] = jsonTrips.entity[i].trip_update.stop_time_update[j].arrival.time;
 					}
@@ -72,146 +89,69 @@ function nextArrivingBus(busStopID){
 			}
 		}
 	});
-	return nextBus;
+	var bsinfo = 		'<div id="content">'+
+			            '<div id="siteNotice">'+
+			            '</div>'+
+			            '<h1 id="firstHeading" class="firstHeading">Bus Stop ID: '+ busStopID +'</h1>'+
+			            '<div id="bodyContent">' +
+				            '<p>' +
+					            'Bus Stop Name: ' + busStopName + '<br>' +
+					            'Location (Lat / Long): ' + busStopLat + ' / ' + busStopLong + '<br>' +
+					            'Next bus / time: ' + nextBus[0] + ' / ' + nextBus[1] + '<br>' +
+				            '</p>'+
+			            '</div>'+
+		            '</div>';
+	return bsinfo;
 }
-// function getBusStopList(){
-    
-    // var i = 0;
-    // var j = 0;
-    // var index = 0;
-    
-    // // uses tempBusStops to hold stop_id
-    // for( i = 0; i < tempBusStops.length; i++){
-		// tempBusStops[i] = new Array(4); //stop_id, name, lat, long
-	// }
-    
-     // for( i = 0; i < busStops.length; i++){
-		// busStops[i] = new Array(4); //stop_id, name, lat, long
-	// }
-    
-    // //temp storing all bus stop info
-	// $.getJSON("./assets/files/stops.json", function(data){ 
-		// tempJsonStops = jQuery.parseJSON(JSON.stringify(data));
-        // for( i = 0; i < tempJsonStops.length; i++){
-            // tempBusStops[i][0] = tempJsonStops[i].stop_id;
-            // tempBusStops[i][1] = tempJsonStops[i].stop_name;
-			// tempBusStops[i][2] = tempJsonStops[i].stop_lat;
-			// tempBusStops[i][3] = tempJsonStops[i].stop_lon;
-        // }      
 
-        // $.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data){ // inner json call
-		// jsonTrips = jQuery.parseJSON(JSON.stringify(data));
-		// index = 0;
-        // for( i = 0; i < jsonTrips.entity.length; i++){
-			// for( j = 0; j < jsonTrips.entity[i].trip_update.stop_time_update.length; j++){
-                // tempJsonStopID[index] = jsonTrips.entity[i].trip_update.stop_time_update[j].stop_id;
-                // index++;
-                
-                
-            // }
-        // }
-    
-    // for(var i=0;i<tempJsonStopID.length;i++) // removes duplicates
-        // {
-        // var str=tempJsonStopID[i];
-        // if(jsonStopID.indexOf(str)==-1)
-            // {
-            // jsonStopID.push(str);
-            // }
-        // }
-           // for( i = 0; i < jsonStopID.length; i++){
-            // if( jsonStopID[i] == tempBusStops[i][0]){
-            // busStops[i][0] = tempBusStops[i].stop_id;
-            // busStops[i][1] = tempBusStops[i].stop_name;
-			// busStops[i][2] = tempBusStops[i].stop_lat;
-			// busStops[i][3] = tempBusStops[i].stop_lon;          
-            // }
-        // }
-        // console.log(tempBusStops);
-    
-       
-    // });
- 
-        
-    // });
+function loadLocalBusstop(thisMap){
+	$.getJSON("./assets/files/stops.json", function(data){
+		localStops = jQuery.parseJSON(JSON.stringify(data));
+		for(var j = 0; j < localStops.length; j++){
+            tempLocalStops[j][0] = localStops[j].stop_id;
+            tempLocalStops[j][1] = localStops[j].stop_name;
+			tempLocalStops[j][2] = localStops[j].stop_lat;
+			tempLocalStops[j][3] = localStops[j].stop_lon;
+        }
+        loadRealTimeBusstop(thisMap);
+	});
+}
 
-// }
-function loadBusStops(thisMap){
-	
-    var index = 0;
-    
-    // uses tempBusStops to hold stop_id
-    for( var i = 0; i < tempBusStops.length; i++){
-		tempBusStops[i] = new Array(4); //stop_id, name, lat, long
-	}
-    
-     for( var i = 0; i < busStops.length; i++){
-		busStops[i] = new Array(4); //stop_id, name, lat, long
-	}
-    
-    //temp storing all bus stop info
-	$.getJSON("./assets/files/stops.json", function(data){ 
-		tempJsonStops = jQuery.parseJSON(JSON.stringify(data));
-        for( var i = 0; i < tempJsonStops.length; i++){
-            tempBusStops[i][0] = tempJsonStops[i].stop_id;
-            tempBusStops[i][1] = tempJsonStops[i].stop_name;
-			tempBusStops[i][2] = tempJsonStops[i].stop_lat;
-			tempBusStops[i][3] = tempJsonStops[i].stop_lon;
-        }      
-
-        $.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data){ // inner json call
+function loadRealTimeBusstop(thisMap){
+	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data){
 		jsonTrips = jQuery.parseJSON(JSON.stringify(data));
-		index = 0;
-        for( var i = 0; i < jsonTrips.entity.length; i++){
-			for( j = 0; j < jsonTrips.entity[i].trip_update.stop_time_update.length; j++){
-                tempJsonStopID[index] = jsonTrips.entity[i].trip_update.stop_time_update[j].stop_id;
-                index++;
-                
-                
-            }
-        }
-    
-    for(var i=0;i<tempJsonStopID.length;i++) // removes duplicates
-        {
-        var str=tempJsonStopID[i];
-        if(jsonStopID.indexOf(str)==-1)
-            {
-            jsonStopID.push(str);
-            }
-        }
-        
-         index = 0;
-           for( var i = 0; i < jsonStopID.length; i++){
-            for( var j = 0; j < tempBusStops.length; j++){
-                if( jsonStopID[i] == tempBusStops[j][0]){
-                    
-                    busStops[index][0] = tempBusStops[j][0];
-                    busStops[index][1] = tempBusStops[j][1];
-                    busStops[index][2] = tempBusStops[j][2];
-                    busStops[index][3] = tempBusStops[j][3];
-                    index++;
-                }
-            }
-        }
+		var count = 0;
+		for (var l = 0; l < jsonTrips.entity.length; l++){
+			for (var k = 0; k < jsonTrips.entity[l].trip_update.stop_time_update.length; k++){
+				tempRealTimeStops[count] =  jsonTrips.entity[l].trip_update.stop_time_update[k].stop_id;
+				count++;
+			}
+		}
+		loadSimilarBusstops(thisMap);
+	});
+}
 
-   
-    for( var i = 0; i < busStops.length; i++){        
-  
-			// var bsinfo = 		'<div id="content">'+
-					            // '<div id="siteNotice">'+
-					            // '</div>'+
-					            // '<h1 id="firstHeading" class="firstHeading">Bus Stop ID: '+ busStops[i][0] +'</h1>'+
-					            // '<div id="bodyContent">' +
-						            // '<p>' +
-							            // 'Bus Stop Name: ' + busStops[i][1] + '<br>' +
-							            // 'Location (Lat / Long): ' + busStops[i][2] + ' / ' + busStops[i][3] + '<br>' +
-							            // //'Next bus / time: ' + nextBusInfo[0] + ' / ' + nextBusInfo[1] + '<br>' +
-						            // '</p>'+
-					            // '</div>'+
-				            // '</div>';
-			busStopInfos[i] = new google.maps.InfoWindow({
-			//	content: bsinfo
-			});
+function loadSimilarBusstops(thisMap){
+	var countFinal = 0;
+	for(var x = 0; x < tempLocalStops.length; x++){
+		if(existsInRealTimeData(tempLocalStops[x][0])){
+			busStops[countFinal][0] = tempLocalStops[x][0];
+			busStops[countFinal][1] = tempLocalStops[x][1];
+			busStops[countFinal][2] = tempLocalStops[x][2];
+			busStops[countFinal][3] = tempLocalStops[x][3];
+			countFinal++;
+		}
+	}
+	console.log(countFinal + " bus stops.");
+	createBusstopMarkers(thisMap);
+}
+
+function createBusstopMarkers(thisMap){
+	var count = 0;
+	for(var i = 0; i < busStops.length; i++){
+		if(busStops[i][0] != null){
+			count++;
+			busStopInfos[i] = new google.maps.InfoWindow();
 			busStopMarkers[i] = new google.maps.Marker({
 				map: thisMap,
 				position: new google.maps.LatLng(busStops[i][2], busStops[i][3]),
@@ -220,18 +160,45 @@ function loadBusStops(thisMap){
 			        		scaledSize: new google.maps.Size(34, 41)
 		    	},
 		    	infowindow: busStopInfos[i]
-    		});
-			google.maps.event.addListener(busStopMarkers[i], 'click', function(innerKey) {
-				return function() {
+			});
+			google.maps.event.addListener(busStopMarkers[i], 'click', function(innerKey){
+				return function(){
+					busStopInfos[innerKey].setContent(nextArrivingBus(busStops[innerKey][0], busStops[innerKey][1], busStops[innerKey][2], busStops[innerKey][3]));
 					busStopInfos[innerKey].open(thisMap, busStopMarkers[innerKey]);
 				}
 			}(i));
 		}
-           });
- 
-        
-    });
+	}
 }
+
+function fillBusstopsArray(thisMap){
+	for(var i = 0; i < tempLocalStops.length; i++){
+		tempLocalStops[i] = new Array(4);
+		busStops[i] = new Array(4);
+	}
+	loadLocalBusstop(thisMap);
+}
+
+function existsInRealTimeData(stopID){
+	for(var i = 0; i < tempRealTimeStops.length; i++){ 
+		if(tempRealTimeStops[i] != null){
+			if(stopID == tempRealTimeStops[i]){
+				return true;
+			}	
+		}
+	}
+	return false;
+}
+
+function loadBusStops(thisMap){
+	fillBusstopsArray(thisMap);
+}
+
+
+/**
+ * METHODS USED FOR VEHICLE POSITIONING BELOW
+ * 
+ */
 
 function updatePositions(){
 	for(var i = 0; i < busmarkers.length; i++){
@@ -297,4 +264,187 @@ function getVehicleInfo(thisMap){
 			}(i));
 		}
 	});
+}
+
+/**
+ * METHODS FOR ROUTE FINDING BELOW
+ */
+function createFastestRoute() {
+	//var origin = document.getElementById("userInput").value;
+	//var destination = document.getElementById("userInput").value;
+	//var originLatLng = getLatitudeLongitude('142 Jerome Ave. Burlington, CT 06013');
+	
+	var results = { };
+
+	$.when(
+		getLatitudeLongitude('1500 New Britain Ave, West Hartford, CT 06110'),
+		getLatitudeLongitude('1615 Stanley Street, New Britain, CT 06053')
+	).then(function (addressOne, addressTwo) {
+		searchTripUpdateForFastestRoute(addressOne.geometry.location, addressTwo.geometry.location);
+		console.log("Drew route between");
+	});
+}
+
+function containsStops(object, start, dest){
+	var startFound = false;
+	var destFound = false;
+	start = 8320;
+	dest = 12665;
+	var arrival = 0;
+	for(var i = 0; i < object.length; i++){
+		if(object[i].stop_id == start){
+			startFound = true;
+		}
+		if(object[i].stop_id == dest){
+			destFound = true;
+			arrival = object[i].arrival.time;
+		}
+	}
+	if(startFound && destFound && arrival != null){
+		return arrival;
+	}
+	return 0;
+}
+
+function searchTripUpdateForFastestRoute(searchVal, start){
+	var routeId = $.Deferred();
+	var closestStartStop = findNearestStop(start);
+	var closestDestStop = findNearestStop(searchVal);
+	var comparison = 99999999999999999999;
+	var temp;
+	//get trip_updates json file and search it for a starting bus stop and that it is unvisited, then checks if the destination is on the bus route after the starting point.
+	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data){
+		jsonTrips = jQuery.parseJSON(JSON.stringify(data));
+		var temp2;
+		for(var i = 0; i < jsonTrips.entity.length; i++) {
+			temp = containsStops(jsonTrips.entity[i].trip_update.stop_time_update, closestStartStop, closestDestStop);
+			if(temp != 0){
+				if(temp < comparison){
+					comparison = temp;
+					temp2 = jsonTrips.entity[i].trip_update.trip.route_id; 
+				}
+			}
+		}
+		routeId.resolve(temp2);
+	});
+
+	$.when(routeId).then(function(result){
+		makeRoute(result, closestStartStop, closestDestStop);
+	});
+}
+
+function findNearestStop(locationGeo){
+	//find the closest bus stop
+	var locationLat = locationGeo.lat();
+	var locationLng = locationGeo.lng();
+	var finalStop;
+
+	var diffLat = 99999999;
+	var diffLng = 99999999;
+
+	var tempDiffLat = 0;
+	var tempDiffLng = 0;
+
+	for(var i = 0; i < busStops.length; i++){
+		tempDiffLat = Math.abs(locationLat - busStops[i][2]);
+		tempDiffLng = Math.abs(locationLng - busStops[i][3]);
+
+		if((diffLat + diffLng) > (tempDiffLng + tempDiffLat)) {
+			diffLat = tempDiffLat;
+			diffLng = tempDiffLng;
+			finalStop = busStops[i][0];
+		}
+	}
+	return finalStop;
+}
+
+function getStopLocation(stopID){
+	for(var i = 0; i < busStops.length; i++){
+		if(busStops[i][0] == stopID){
+			return new google.maps.LatLng(busStops[i][2], busStops[i][3]);
+		}
+	}
+	return null;
+}
+
+function makeRoute(routeId, origin, destination) {
+	var waypoints = new Array();
+	console.log("Make route: " + routeId);
+	//set marker for origin --- optional?
+	//set marker for destination --- optional?
+	//create array list of bus stops being traversed to reach destination
+
+	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data) {
+		var entities = jQuery.parseJSON(JSON.stringify(data)).entity;
+		console.log("ORIGIN: " + origin);
+
+		
+		var entity = _.first(
+			_.filter(entities, function (entity) { 
+				return entity.trip_update.trip.route_id == routeId
+			})
+		)
+
+		var startIndex = _.findIndex(entity.trip_update.stop_time_update, function (busStop) {
+			return busStop.stop_id == origin;
+		})
+
+		var endIndex = _.findIndex(entity.trip_update.stop_time_update, function (busStop) {
+			return busStop.stop_id == destination;
+		})
+
+		var busStops = _.range(startIndex, endIndex);
+		
+		console.log(busStops);
+
+	});
+
+	console.log(waypoints.length);
+	for(var e = 0; e < waypoints.length; e++){
+		console.log(waypoints[e].lat(), waypoints[e].lng());
+	}
+	//run route
+	var directionsService = new google.maps.DirectionsService();
+
+	var renderOptions = { draggable: true };
+	var directionDisplay = new google.maps.DirectionsRenderer(renderOptions);
+
+	//set the directions display service to the map
+	directionDisplay.setMap(map);
+	//build directions request
+	var request = {
+        origin: getStopLocation(origin),
+        destination: getStopLocation(destination),
+        waypoints: waypoints, //an array
+        optimizeWaypoints: false, //false to use the order specified.
+        travelMode: google.maps.DirectionsTravelMode.TRANSIT
+    };
+
+	//get the route from the directions service
+	directionsService.route(request, function(response, status) {
+    	if (status == google.maps.DirectionsStatus.OK) {
+        	directionDisplay.setDirections(response);
+    	}
+    	else {
+        	//handle error
+        	alert('Could not make directions: ' + status);
+    	}
+	});
+}
+
+function getLatitudeLongitude(address) {
+    var def = $.Deferred();
+	var geocoder = new google.maps.Geocoder();
+	geocoder.geocode({
+		address: address
+	}, function (results, status) {
+		if (status == google.maps.GeocoderStatus.OK) {
+			def.resolve(results[0]);
+			return;
+		} 
+
+		def.reject(status);
+	});
+
+	return def.promise();
 }
