@@ -31,7 +31,7 @@ var tempRealTimeStops = new Array(10000);
  * Method below initializes the google map module that we will be using
  */
 function initMap(){
-  	var map = new google.maps.Map(document.getElementById('map'), {
+  	map = new google.maps.Map(document.getElementById('map'), {
 	  center: {lat: 41.6907, lng: -72.7665},
 	  zoom: 16,
 	  mapTypeControl: false,
@@ -330,6 +330,7 @@ function findFastest(promises){
 	  		results.forEach(function(result){
 	  			if(result != 0 && comparison == null){
 	  				comparison = result;
+	  				temp = jsonTrips.entity[count].id;
 	  			}
 	  			else if(result != 0 && result < comparison){
 					temp = jsonTrips.entity[count].id;
@@ -412,15 +413,19 @@ function findNearestStop(locationGeo){
 }
 
 function getStopLocation(stopID){
-	var loc = $.Deferred();
+	var temp = {
+		lat: null,
+		lng: null
+	};
 	for(var i = 0; i < busStops.length; i++){
 		if(busStops[i][0] == stopID){
 			console.log("Found location for Stop ID -> " + stopID + " at " + busStops[i][2] + " " + busStops[i][3]);
-			loc.resolve(new google.maps.LatLng(busStops[i][2], busStops[i][3]));
-			i = busStops.length;
+			temp.lat = busStops[i][2];
+			temp.lng = busStops[i][3];
+			break;
 		}
 	}
-	return loc.promise();
+	return temp;
 }
 
 function getWaypoints(routeId, origin, destination){
@@ -449,10 +454,13 @@ function getWaypoints(routeId, origin, destination){
 		console.log("end: " + endIndex)
 		console.dir(entity)
 
-		var j = 0;
+		var temp;
 		for(var i = startIndex; i <= endIndex; i++){
-			waypoints[j] = getStopLocation(entity.trip_update.stop_time_update[i].stop_id);
-			j++;
+			temp = getStopLocation(entity.trip_update.stop_time_update[i].stop_id);
+			waypoints.push({
+				location: new google.maps.LatLng(temp.lat, temp.lng),
+				stopover: true
+			});
 		}
 
 		final.resolve(true);
@@ -467,11 +475,19 @@ function paintRouteOnMap(origin, destination){
 	var directionsService = new google.maps.DirectionsService();
 
 	var renderOptions = { draggable: true };
-	var directionDisplay = new google.maps.DirectionsRenderer(renderOptions);
-	directionDisplay.setMap(map);
+	var directionsService = new google.maps.DirectionsService();
 	var request;
-	directionDisplay.setMap(map);
-
+	var polylineProps = {
+		strokeColor: '#009933',
+		strokeOpacity: 1.0,
+		strokeWeight: 10
+	};
+	 var directionDisplay = new google.maps.DirectionsRenderer({
+		draggable: false,
+		map: map,
+		suppressMarkers: true,
+		polylineOptions: polylineProps
+	});
 	$.when(
 		getStopLocation(origin),
 		getStopLocation(destination)
@@ -481,18 +497,18 @@ function paintRouteOnMap(origin, destination){
 	        destination: result2,
 	        waypoints: waypoints, //an array
 	        optimizeWaypoints: false, //false to use the order specified.
-	        travelMode: google.maps.DirectionsTravelMode.TRANSIT
+	        travelMode: google.maps.DirectionsTravelMode.DRIVING
     	};
     	directionsService.route(request, function(response, status) {
 	    	if (status == google.maps.DirectionsStatus.OK) {
 	        	directionDisplay.setDirections(response);
 	    	}
 	    	else {
-	        	//handle error
 	        	alert('Could not make directions: ' + status);
 	    	}
 		});
 	});
+	console.log("DONE???");
 }
 
 function makeRoute(tripid, origin, destination) {
@@ -501,10 +517,9 @@ function makeRoute(tripid, origin, destination) {
 		getWaypoints(tripid, origin, destination)
 	).then(function (result){
 		if(result){
-			console.dir(waypoints[0]);
 			console.log("Waypoints have been collected.");
 			for(var k = 0; k < waypoints.length; k++){
-				console.log(waypoints[k].lat(), waypoints[k].lng());
+				console.log(waypoints[k].location.lat(), waypoints[k].location.lng());
 			}
 			paintRouteOnMap(origin, destination);
 		}
