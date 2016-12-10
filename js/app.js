@@ -2,10 +2,12 @@ var map;
 
 $('#searchRoute').submit(function(e) {
 	e.preventDefault();
-	createFastestRoute();
+	var origin = document.getElementById("origin").value;
+	var destination = document.getElementById("destination").value;
+	createFastestRoute(origin, destination);
 	return false;
 });
-
+var waypoints = [];
 var latlng;
 
 /**
@@ -156,8 +158,8 @@ function createBusstopMarkers(thisMap){
 				map: thisMap,
 				position: new google.maps.LatLng(busStops[i][2], busStops[i][3]),
 				icon:  {
-			        url: 	"assets/img/busstopicon.png",
-			        		scaledSize: new google.maps.Size(34, 41)
+			        url: 	"assets/img/busstop.png",
+			        		scaledSize: new google.maps.Size(15, 15)
 		    	},
 		    	infowindow: busStopInfos[i]
     		});
@@ -201,21 +203,18 @@ function loadBusStops(thisMap){
  */
 
 function updatePositions(){
-	for(var i = 0; i < busmarkers.length; i++){
-		if(busmarkers[i] != null){
-			getNewPosition(i);
-		}
-	}
-}
-
-function getNewPosition(i){
-	var latlng;
-	$.getJSON("http://65.213.12.244/realtimefeed/vehicle/vehiclepositions.json", function(data){
+	$.getJSON("http://65.213.12.244/realtimefeed/vehicle/vehiclepositions.json", function(data) {
 		jsonObjectVehicle = jQuery.parseJSON(JSON.stringify(data));
-		latlng = new google.maps.LatLng(jsonObjectVehicle.entity[i].vehicle.position.latitude, jsonObjectVehicle.entity[i].vehicle.position.longitude);
-		busmarkers[i].setPosition(latlng);
+
+		for (var i = 0; i < jsonObjectVehicle.entity.length; i++) {
+			if(busmarkers[i] != null) {
+				var latlng = new google.maps.LatLng(jsonObjectVehicle.entity[i].vehicle.position.latitude, jsonObjectVehicle.entity[i].vehicle.position.longitude);
+				busmarkers[i].setPosition(latlng);
+			}
+		}
 	});
 }
+
 
 function getVehicleInfo(thisMap){
 	var vehicles = new Array(1000); //enough for 1000 vehicles
@@ -269,28 +268,35 @@ function getVehicleInfo(thisMap){
 /**
  * METHODS FOR ROUTE FINDING BELOW
  */
-function createFastestRoute() {
-	//var origin = document.getElementById("userInput").value;
-	//var destination = document.getElementById("userInput").value;
-	//var originLatLng = getLatitudeLongitude('142 Jerome Ave. Burlington, CT 06013');
-	
-	var results = { };
+function createFastestRoute(origin, dest) {
+	console.log("createFastestRoute -> 1");
+	var temp1, temp2;
 
 	$.when(
-		getLatitudeLongitude('1500 New Britain Ave, West Hartford, CT 06110'),
-		getLatitudeLongitude('1615 Stanley Street, New Britain, CT 06053')
+		getLatitudeLongitude(origin),
+		getLatitudeLongitude(dest)
 	).then(function (addressOne, addressTwo) {
-		searchTripUpdateForFastestRoute(addressOne.geometry.location, addressTwo.geometry.location);
-		console.log("Drew route between");
+		$.when(
+			findNearestStop(addressOne.geometry.location),
+			findNearestStop(addressTwo.geometry.location)
+		).then(function(r1, r2) {
+			temp1 = r1;
+			temp2 = r2;
+			$.when(
+				searchTripUpdateForFastestRoute(temp1,  temp2)
+			).then(function(result){
+				console.log(temp1);
+				makeRoute(result, temp1, temp2);
+			});
+		});
 	});
 }
 
 function containsStops(object, start, dest){
 	var startFound = false;
 	var destFound = false;
-	start = 8320;
-	dest = 12665;
-	var arrival = 0;
+	var arrival;
+	var result;
 	for(var i = 0; i < object.length; i++){
 		if(object[i].stop_id == start){
 			startFound = true;
@@ -300,139 +306,214 @@ function containsStops(object, start, dest){
 			arrival = object[i].arrival.time;
 		}
 	}
-	if(startFound && destFound && arrival != null){
-		return arrival;
+	if(startFound && destFound && (arrival != null)){
+		console.log("Found from start -> " + start + " to -> " + dest);
+		result = arrival;
+	} else{
+		result = 0;
 	}
-	return 0;
+
+	return result;
 }
 
-function searchTripUpdateForFastestRoute(searchVal, start){
-	var routeId = $.Deferred();
-	var closestStartStop = findNearestStop(start);
-	var closestDestStop = findNearestStop(searchVal);
-	var comparison = 99999999999999999999;
+function findFastest(promises){
 	var temp;
-	//get trip_updates json file and search it for a starting bus stop and that it is unvisited, then checks if the destination is on the bus route after the starting point.
-	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data){
+	var final = $.Deferred();
+	var comparison;
+	var count = 0;
+
+	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data) {
 		jsonTrips = jQuery.parseJSON(JSON.stringify(data));
-		var temp2;
-		for(var i = 0; i < jsonTrips.entity.length; i++) {
-			temp = containsStops(jsonTrips.entity[i].trip_update.stop_time_update, closestStartStop, closestDestStop);
-			if(temp != 0){
-				if(temp < comparison){
-					comparison = temp;
-					temp2 = jsonTrips.entity[i].trip_update.trip.route_id; 
+		$.when(promises)
+	  	.then(function(results){
+	  		console.log(results)
+	  		results.forEach(function(result){
+	  			if(result != 0 && comparison == null){
+	  				comparison = result;
+	  			}
+	  			else if(result != 0 && result < comparison){
+					temp = jsonTrips.entity[count].id;
+					comparison = result;
 				}
-			}
+				count++;
+	  		});
+			final.resolve(temp);
+	  	});
+	  });
+
+  	return final.promise();
+}
+
+function fillPromises(origin, dest){
+	var promises = [];
+	var final = $.Deferred();
+	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data) {
+		jsonTrips = jQuery.parseJSON(JSON.stringify(data));
+		console.log("Checking " + jsonTrips.entity.length + " entities for origin and dest...");
+		for(var i = 0; i < jsonTrips.entity.length; i++) {
+			promises.push(containsStops(jsonTrips.entity[i].trip_update.stop_time_update, origin, dest));
 		}
-		routeId.resolve(temp2);
+
+		final.resolve(promises);
 	});
 
-	$.when(routeId).then(function(result){
-		makeRoute(result, closestStartStop, closestDestStop);
+	return final.promise();
+}
+
+function searchTripUpdateForFastestRoute(origin, dest){
+	console.log("searchTripUpdate() -> 4");
+	var final = $.Deferred();
+	var promises = [];	
+	
+	$.when(
+		fillPromises(origin, dest)
+	).then(function(promises){
+		$.when(
+			findFastest(promises)
+		).then(function(result) {
+			console.log("Result from fastest -> " + result);
+			final.resolve(result);
+		});
 	});
+
+	return final.promise();
 }
 
 function findNearestStop(locationGeo){
 	//find the closest bus stop
+	console.log("findNearestStop() -> 3");
+
 	var locationLat = locationGeo.lat();
 	var locationLng = locationGeo.lng();
-	var finalStop;
 
-	var diffLat = 99999999;
-	var diffLng = 99999999;
+	console.log("Looking for stop near " + locationLat + " " + locationLng);
 
-	var tempDiffLat = 0;
-	var tempDiffLng = 0;
+	var result = $.Deferred();
+
+	var diffLat;
+	var diffLng;
+	var tempDiffLat;
+	var tempDiffLng;
+	var tempStop;
 
 	for(var i = 0; i < busStops.length; i++){
 		tempDiffLat = Math.abs(locationLat - busStops[i][2]);
 		tempDiffLng = Math.abs(locationLng - busStops[i][3]);
 
-		if((diffLat + diffLng) > (tempDiffLng + tempDiffLat)) {
+		if((diffLat + diffLng) > (tempDiffLng + tempDiffLat) || (diffLat == null)) {
 			diffLat = tempDiffLat;
 			diffLng = tempDiffLng;
-			finalStop = busStops[i][0];
+			tempStop = busStops[i][0];
 		}
 	}
-	return finalStop;
+	result.resolve(tempStop);
+
+	return result.promise();
 }
 
 function getStopLocation(stopID){
+	var loc = $.Deferred();
 	for(var i = 0; i < busStops.length; i++){
 		if(busStops[i][0] == stopID){
-			return new google.maps.LatLng(busStops[i][2], busStops[i][3]);
+			console.log("Found location for Stop ID -> " + stopID + " at " + busStops[i][2] + " " + busStops[i][3]);
+			loc.resolve(new google.maps.LatLng(busStops[i][2], busStops[i][3]));
+			i = busStops.length;
 		}
 	}
-	return null;
+	return loc.promise();
 }
 
-function makeRoute(routeId, origin, destination) {
-	var waypoints = new Array();
-	console.log("Make route: " + routeId);
-	//set marker for origin --- optional?
-	//set marker for destination --- optional?
-	//create array list of bus stops being traversed to reach destination
-
+function getWaypoints(routeId, origin, destination){
+	console.log("TRIP ID -> " + routeId);
+	console.log("ORIGIN ID -> " + origin);
+	console.log("DEST ID -> " + destination);
+	var final = $.Deferred();
 	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data) {
 		var entities = jQuery.parseJSON(JSON.stringify(data)).entity;
-		console.log("ORIGIN: " + origin);
-
 		
 		var entity = _.first(
 			_.filter(entities, function (entity) { 
-				return entity.trip_update.trip.route_id == routeId
+				return entity.id == routeId;
 			})
-		)
+		);
 
-		var startIndex = _.findIndex(entity.trip_update.stop_time_update, function (busStop) {
-			return busStop.stop_id == origin;
-		})
+		var startIndex = _.findIndex(entity.trip_update.stop_time_update, function (stop) {
+			return stop.stop_id == origin;
+		});
 
-		var endIndex = _.findIndex(entity.trip_update.stop_time_update, function (busStop) {
-			return busStop.stop_id == destination;
-		})
+		var endIndex = _.findIndex(entity.trip_update.stop_time_update, function (stop) {
+			return stop.stop_id == destination;
+		});
 
-		var busStops = _.range(startIndex, endIndex);
-		
-		console.log(busStops);
+		console.log("start: " + startIndex)
+		console.log("end: " + endIndex)
+		console.dir(entity)
 
+		var j = 0;
+		for(var i = startIndex; i <= endIndex; i++){
+			waypoints[j] = getStopLocation(entity.trip_update.stop_time_update[i].stop_id);
+			j++;
+		}
+
+		final.resolve(true);
 	});
 
-	console.log(waypoints.length);
-	for(var e = 0; e < waypoints.length; e++){
-		console.log(waypoints[e].lat(), waypoints[e].lng());
-	}
+	return final.promise();
+}
+
+function paintRouteOnMap(origin, destination){
+	console.log("Attempting to map the route...");
 	//run route
 	var directionsService = new google.maps.DirectionsService();
 
 	var renderOptions = { draggable: true };
 	var directionDisplay = new google.maps.DirectionsRenderer(renderOptions);
-
-	//set the directions display service to the map
 	directionDisplay.setMap(map);
-	//build directions request
-	var request = {
-        origin: getStopLocation(origin),
-        destination: getStopLocation(destination),
-        waypoints: waypoints, //an array
-        optimizeWaypoints: false, //false to use the order specified.
-        travelMode: google.maps.DirectionsTravelMode.TRANSIT
-    };
+	var request;
+	directionDisplay.setMap(map);
 
-	//get the route from the directions service
-	directionsService.route(request, function(response, status) {
-    	if (status == google.maps.DirectionsStatus.OK) {
-        	directionDisplay.setDirections(response);
-    	}
-    	else {
-        	//handle error
-        	alert('Could not make directions: ' + status);
-    	}
+	$.when(
+		getStopLocation(origin),
+		getStopLocation(destination)
+	).then(function (result1, result2) {
+		request = {
+	        origin: result1,
+	        destination: result2,
+	        waypoints: waypoints, //an array
+	        optimizeWaypoints: false, //false to use the order specified.
+	        travelMode: google.maps.DirectionsTravelMode.TRANSIT
+    	};
+    	directionsService.route(request, function(response, status) {
+	    	if (status == google.maps.DirectionsStatus.OK) {
+	        	directionDisplay.setDirections(response);
+	    	}
+	    	else {
+	        	//handle error
+	        	alert('Could not make directions: ' + status);
+	    	}
+		});
+	});
+}
+
+function makeRoute(tripid, origin, destination) {
+	console.log("makeRoute() -> 5");
+	$.when(
+		getWaypoints(tripid, origin, destination)
+	).then(function (result){
+		if(result){
+			console.dir(waypoints[0]);
+			console.log("Waypoints have been collected.");
+			for(var k = 0; k < waypoints.length; k++){
+				console.log(waypoints[k].lat(), waypoints[k].lng());
+			}
+			paintRouteOnMap(origin, destination);
+		}
 	});
 }
 
 function getLatitudeLongitude(address) {
+	console.log("getLatLng() -> 2");
+	console.log("Attempting to geocode -> " + address);
     var def = $.Deferred();
 	var geocoder = new google.maps.Geocoder();
 	geocoder.geocode({
@@ -440,10 +521,10 @@ function getLatitudeLongitude(address) {
 	}, function (results, status) {
 		if (status == google.maps.GeocoderStatus.OK) {
 			def.resolve(results[0]);
-			return;
+		} else {
+			console.log("Geocode failed");
+			def.reject(status);
 		} 
-
-		def.reject(status);
 	});
 
 	return def.promise();
