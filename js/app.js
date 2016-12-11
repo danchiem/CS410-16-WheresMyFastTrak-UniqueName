@@ -345,7 +345,11 @@ function paintVehicleRoute(object){
 	while(waypoints.length > 23){
 		waypoints.pop();
 	}
-	paintRouteOnMap(waypoints, waypoints[0].location, waypoints[waypoints.length - 1].location);
+	if(waypoints[0] == null || waypoints[waypoints.length - 1] == null){
+		popAlert("bad", "Could not create route.");
+	} else {
+		paintRouteOnMap(waypoints, waypoints[0].location, waypoints[waypoints.length - 1].location);
+	}
 }
 
 /**
