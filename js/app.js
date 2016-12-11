@@ -17,7 +17,22 @@ $('#searchRoute').submit(function(e) {
 	return false;
 });
 
-var waypoints = [];
+document.getElementById("cancelButton").addEventListener("click", function(){
+	if(directionDisplay != null) {
+	    directionDisplay.setMap(null);
+	    directionDisplay = null;
+	}
+	currentOrigin = null;
+	currentDestination = null;
+	currentTripID = null;
+	pickupTime = null;
+	dropoffTime = null;
+	document.getElementById("infoPane").style.display = "none";
+	document.getElementById("cancelButton").style.display = "none";
+	popAlert("good", "Route successfully cancelled.");
+});
+
+var directionDisplay;
 var latlng;
 
 /**
@@ -35,6 +50,9 @@ var busStopMarkers = new Array(5000);
 var busStopInfos = new Array(5000);
 var tempLocalStops = new Array (10000);
 var tempRealTimeStops = new Array(10000);
+
+
+var vehicles;
 
 /**
  * Method below initializes the google map module that we will be using
@@ -109,7 +127,6 @@ function nextArrivingBus(busStopID, busStopName, busStopLat, busStopLong) {
 				            '<p>' +
 					            'Bus Stop Name: ' + busStopName + '<br>' +
 					            'Location (Lat / Long): ' + busStopLat + ' / ' + busStopLong + '<br>' +
-					            'Next bus / time: ' + nextBus[0] + ' / ' + nextBus[1] + '<br>' +
 				            '</p>'+
 			            '</div>'+
 		            '</div>';
@@ -236,7 +253,7 @@ function updatePositions(){
 
 
 function getVehicleInfo(thisMap){
-	var vehicles = new Array(1000); //enough for 1000 vehicles
+	vehicles = new Array(1000); //enough for 1000 vehicles
 	for(var k = 0; k < vehicles.length; k++){
 		vehicles[k] = new Array(6);
 	}
@@ -280,8 +297,55 @@ function getVehicleInfo(thisMap){
 					busInfos[innerKey].open(thisMap, busmarkers[innerKey]);
 				}
 			}(i));
+			google.maps.event.addListener(busmarkers[i], 'click', function(innerKey) {
+				return function() {
+					showVehicleRoute(innerKey);
+				}
+			}(i));
 		}
 	});
+}
+
+function showVehicleRoute(i){
+	console.log(vehicles[i][0]);
+	var vehicleID = vehicles[i][0];
+	var trip;
+	var tripStops;
+	$.getJSON("http://65.213.12.244/realtimefeed/vehicle/vehiclepositions.json", function(data){
+		jsonObjectVehicle = jQuery.parseJSON(JSON.stringify(data));
+		for(var i = 0; i < jsonObjectVehicle.entity.length; i++){
+			if(jsonObjectVehicle.entity[i].id == vehicleID){
+				trip = jsonObjectVehicle.entity[i].vehicle.trip.trip_id;
+				break;
+			}
+		}
+	});
+	$.get("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data){
+		entities = jQuery.parseJSON(JSON.stringify(data)).entity;
+		for(var j = 0; j < entities.length; j++){
+			if(entities[j].id == trip){
+				tripStops = entities[j].trip_update.stop_time_update;
+				paintVehicleRoute(tripStops);
+				break;
+			}
+		}
+	});
+}
+
+function paintVehicleRoute(object){
+	var waypoints = [];
+	var temp;
+	for(var i = 0; i < object.length; i++){
+		temp = getStopLocation(object[i].stop_id);
+		waypoints.push({
+			location: new google.maps.LatLng(temp.lat, temp.lng),
+			stopover: true
+		});
+	}
+	while(waypoints.length > 23){
+		waypoints.pop();
+	}
+	paintRouteOnMap(waypoints, waypoints[0].location, waypoints[waypoints.length - 1].location);
 }
 
 /**
@@ -500,7 +564,7 @@ function getWaypoints(routeId, origin, destination){
 	findTimes(routeId, origin, destination);
 	currentOrigin = origin;
 	currentDestination = destination;
-	
+	var waypoints = [];
 	var final = $.Deferred();
 	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data) {
 		var entities = jQuery.parseJSON(JSON.stringify(data)).entity;
@@ -531,14 +595,16 @@ function getWaypoints(routeId, origin, destination){
 				stopover: true
 			});
 		}
-
-		final.resolve(true);
+		while(waypoints.length > 23){
+			waypoints.pop();
+		}
+		final.resolve(waypoints);
 	});
 
 	return final.promise();
 }
 
-function paintRouteOnMap(origin, destination){
+function paintRouteOnMap(waypoints, origin, destination){
 	console.log("Attempting to map the route...");
 	//run route
 	var directionsService = new google.maps.DirectionsService();
@@ -551,34 +617,56 @@ function paintRouteOnMap(origin, destination){
 		strokeOpacity: 1.0,
 		strokeWeight: 10
 	};
-	 var directionDisplay = new google.maps.DirectionsRenderer({
+	if(directionDisplay != null) {
+	    directionDisplay.setMap(null);
+	    directionDisplay = null;
+	}
+	directionDisplay = new google.maps.DirectionsRenderer({
 		draggable: false,
 		map: map,
 		suppressMarkers: true,
 		polylineOptions: polylineProps
 	});
-	$.when(
-		getStopLocation(origin),
-		getStopLocation(destination)
-	).then(function (result1, result2) {
+	if(isStopID(origin) && isStopID(destination)){
+	 	$.when(
+			getStopLocation(origin),
+			getStopLocation(destination)
+		).then(function (result1, result2) {
+			request = {
+		        origin: result1,
+		        destination: result2,
+		        waypoints: waypoints, //an array
+		        optimizeWaypoints: false, //false to use the order specified.
+		        travelMode: google.maps.DirectionsTravelMode.DRIVING
+	    	};
+	    	directionsService.route(request, function(response, status) {
+		    	if (status == google.maps.DirectionsStatus.OK) {
+		        	directionDisplay.setDirections(response);
+		        	popAlert("good", "A route has been found!");
+					showTripInfo();
+		    	}
+		    	else {
+		    		popAlert("bad", "Could not create the route.");
+		    	}
+			});
+		});
+	} else {
 		request = {
-	        origin: result1,
-	        destination: result2,
+	        origin: origin,
+	        destination: destination,
 	        waypoints: waypoints, //an array
 	        optimizeWaypoints: false, //false to use the order specified.
 	        travelMode: google.maps.DirectionsTravelMode.DRIVING
-    	};
+	    };
     	directionsService.route(request, function(response, status) {
 	    	if (status == google.maps.DirectionsStatus.OK) {
 	        	directionDisplay.setDirections(response);
 	    	}
 	    	else {
-	        	alert('Could not make directions: ' + status);
+	    		popAlert("bad", "Could not create the route.");
 	    	}
 		});
-	});
-	popAlert("good", "A route has been found!");
-	showTripInfo();
+	}
 }
 
 function showTripInfo(){
@@ -601,12 +689,12 @@ function makeRoute(tripid, origin, destination) {
 	$.when(
 		getWaypoints(tripid, origin, destination)
 	).then(function (result){
-		if(result){
+		if(result[0] != null){
 			console.log("Waypoints have been collected.");
-			for(var k = 0; k < waypoints.length; k++){
-				console.log(waypoints[k].location.lat(), waypoints[k].location.lng());
+			for(var k = 0; k < result.length; k++){
+				console.log(result[k].location.lat(), result[k].location.lng());
 			}
-			paintRouteOnMap(origin, destination);
+			paintRouteOnMap(result, origin, destination);
 		}
 	});
 }
@@ -623,6 +711,7 @@ function getLatitudeLongitude(address) {
 			def.resolve(results[0]);
 		} else {
 			console.log("Geocode failed");
+			popAlert("bad", "Googles geocoder failed.");
 			def.reject(status);
 		} 
 	});
