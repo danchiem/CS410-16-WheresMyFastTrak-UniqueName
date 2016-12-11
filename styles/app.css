@@ -2,6 +2,7 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+
 @font-face {
   font-family: 'quicksand--light';
   src: url('../assets/fonts/quicksand/Quicksand-Light.otf') format('opentype');
@@ -19,11 +20,13 @@
   src:  url('../assets/fonts/quicksand/Quicksand-Bold.otf') format('opentype');
   font-weight: 700;
 }
+
 html, body{
   height: 100%;
   margin: 0;
   padding: 0;
 }
+
 #map{
   width: 75%;
   height: 100%;
@@ -31,6 +34,7 @@ html, body{
   float:  right;
   z-index:  8;
 }
+
 .panel{
   background: blue; /* For browsers that do not support gradients */
   background: -webkit-linear-gradient(#673AB7, #2196F3); /* For Safari 5.1 to 6.0 */
@@ -50,27 +54,34 @@ html, body{
   z-index: 9;
   box-shadow: 0 0 20px rgba(0,0,0,0.4);
 }
+
 .panel img{
   display:  flex;
   position: relative;
 	width:  50%;
 }
+
 ::-webkit-input-placeholder{ 
   color: #fff; 
 }
+
 ::-moz-placeholder{ 
   color: #fff; 
 }
+
 :-ms-input-placeholder{
   color: #fff;
 }
+
 input:-moz-placeholder{
   color: #fff;
 }
+
 form{
   width:  100%;
   position:  relative;
 }
+
 input[type="text"]{
   display: flex;
   border: none;
@@ -85,9 +96,11 @@ input[type="text"]{
   border-bottom: 1px solid white;
   margin: 20px 0;
 }
+
 input[type="text"]:focus{
   outline: none;
 }
+
 .arrow{
   border: 1px solid white;
   background: transparent url('../assets/img/arrow_white.svg') center center no-repeat;
@@ -97,11 +110,41 @@ input[type="text"]:focus{
   border-radius:  50%;
   float:  right;
 }
+
 .arrow:hover{
   background-color:  white;
   background: white url('../assets/img/arrow_indigo.svg') center center no-repeat;
   cursor: pointer;
 }
+
+.arrow:focus {
+  outline: 0;
+}
+
+.cancelRoute{
+  border: 1px solid white;
+  background: transparent url('../assets/img/arrow_white.svg') center center no-repeat;
+  padding: 5px;
+  height: 50px;
+  width: 50px;
+  border-radius:  50%;
+  float:  right;
+  -ms-transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+  display:  none;
+}
+
+.cancelRoute:hover{
+  background-color:  white;
+  background: white url('../assets/img/arrow_indigo.svg') center center no-repeat;
+  cursor: pointer;
+}
+
+.cancelRoute:focus {
+  outline: 0;
+}
+
 .wrappers{
   width: 100%;
   display:  flex;
@@ -109,6 +152,7 @@ input[type="text"]:focus{
   align-items: center;
   flex-direction:  column;
 }
+
 .alert{
   width: 100%;
   padding: 10px;
@@ -118,15 +162,26 @@ input[type="text"]:focus{
   margin: 5px;
   font: 1em 'quicksand', sans-serif;
 }
+
 .alert:hover{
   cursor: pointer;
 }
+
 .alert__good{
   background: #43A047;
+  display: none;
 }
+
+.alert__neutral {
+  background:  #FFC107;
+  display: none;
+}
+
 .alert__bad{
   background: #E53935;
+  display: none;
 }
+
 .information_pane{
   width: 100%;
   padding: 10px;
@@ -139,17 +194,22 @@ input[type="text"]:focus{
   align-items: center;
   flex-direction:  row;
   margin: 10px;
+  display: none;
 }
+
 .information_pane:hover{
   cursor: pointer;
 }
+
 .information_pane .route_info{
 
 }
+
 .information_pane img{
   width: 35px;
   height: 35px;
 }
+
 .clear{
   clear: both;
 }

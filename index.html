@@ -12,45 +12,27 @@
     <div class="panel">
       <div class="wrappers">
         <img src="assets/img/wmftLogo_white.svg"/>
-        <form id="searchRoute">
-          <input type="text" placeholder="Choose a starting point" value="19 santo court, new britain, ct, 06053" id="origin"/>
-          <input type="text" placeholder="Enter your destination" value="1615 stanley st, new britain, ct, 06053" id="destination"/>
+        <form id="searchRoute" autocomplete="off">
+          <input type="text" placeholder="Choose a starting point" id="origin" value="19 santo court, new britain, ct, 06053"/>
+          <input type="text" placeholder="Enter your destination" id="destination" value="1615 stanley st, new britain, ct, 06053"/>
           <input type="submit" class="arrow" value=""/>
           <div class="clear"></div>
         </form>
       </div>
       <div class="wrappers">
-        <div class="information_pane">
+        <div class="information_pane" id="infoPane">
             <img src="assets/img/bus_white.svg"/>
-            <div class="route_info">
-              via Route A<br>
-              6:30 PM pickup<br>
-              6:45 PM dropoff<br>
+            <div class="route_info" id="routeInfo1">
             </div>
-            <div class="route_info">
-              15 min<br>
-              9.3 miles<br>
-              CT-11563<br>
+            <div class="route_info" id="routeInfo2">
             </div>
         </div>
-        <div class="information_pane">
-            <img src="assets/img/bus_white.svg"/>
-            <div class="route_info">
-              via Route B<br>
-              6:50 PM pickup<br>
-              7:12 PM dropoff<br>
-            </div>
-            <div class="route_info">
-              23 min<br>
-              11.7 miles<br>
-              CT-19432<br>
-            </div>
-        </div>
+        <input type="submit" class="cancelRoute" value="" id="cancelButton"/>
       </div>
       <div class="wrappers">
-        <div class="alert alert__bad">Bus is delayed 30 seconds!</div>
-        <div class="alert alert__good">Bus is at pickup location!</div>
-        <div class="alert alert__good">You have arrived!</div>
+        <div id="bad" class="alert alert__bad"></div>
+        <div id="neutral" class="alert alert__neutral"></div>
+        <div id="good" class="alert alert__good"></div>
       </div>
     </div>
 

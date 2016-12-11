@@ -1,12 +1,22 @@
 var map;
+var currentTripID;
+var currentOrigin;
+var currentDestination;
+var tripStatus;
+var pickupTime;
+var dropoffTime;
 
 $('#searchRoute').submit(function(e) {
 	e.preventDefault();
 	var origin = document.getElementById("origin").value;
 	var destination = document.getElementById("destination").value;
-	createFastestRoute(origin, destination);
+	if(origin && destination){
+		popAlert("neutral", "Searching for a route...");
+		createFastestRoute(origin, destination);
+	}
 	return false;
 });
+
 var waypoints = [];
 var latlng;
 
@@ -25,7 +35,6 @@ var busStopMarkers = new Array(5000);
 var busStopInfos = new Array(5000);
 var tempLocalStops = new Array (10000);
 var tempRealTimeStops = new Array(10000);
-
 
 /**
  * Method below initializes the google map module that we will be using
@@ -62,6 +71,7 @@ function initMap(){
 		    map.setCenter(pos);
 		});
 	}
+	popAlert("neutral", "Loading bus stops...");
 	loadBusStops(map);
 	getVehicleInfo(map);
 	setInterval(updatePositions, 30000);
@@ -104,6 +114,15 @@ function nextArrivingBus(busStopID, busStopName, busStopLat, busStopLong) {
 			            '</div>'+
 		            '</div>';
 	return bsinfo;
+}
+
+function popAlert(status, message){
+	var temp = status;
+	document.getElementById(temp).innerHTML = message;
+	document.getElementById(temp).style.display = "block";
+	setTimeout(function(){
+		document.getElementById(temp).style.display = "none";
+	}, 5000, temp);
 }
 
 function loadLocalBusstop(thisMap){
@@ -268,42 +287,69 @@ function getVehicleInfo(thisMap){
 /**
  * METHODS FOR ROUTE FINDING BELOW
  */
+function isStopID(test){
+	return (/^\d+$/.test(test));
+}
+
 function createFastestRoute(origin, dest) {
 	console.log("createFastestRoute -> 1");
 	var temp1, temp2;
-
-	$.when(
-		getLatitudeLongitude(origin),
-		getLatitudeLongitude(dest)
-	).then(function (addressOne, addressTwo) {
+	if(isStopID(origin) && isStopID(dest)){
 		$.when(
-			findNearestStop(addressOne.geometry.location),
-			findNearestStop(addressTwo.geometry.location)
-		).then(function(r1, r2) {
-			temp1 = r1;
-			temp2 = r2;
+			searchTripUpdateForFastestRoute(origin,  dest)
+		).then(function(result){
+			if(result){
+				makeRoute(result, origin, dest);
+			} else {
+				popAlert("bad", "We could not find a route...");
+			}
+		});
+	} else {
+		$.when(
+			getLatitudeLongitude(origin),
+			getLatitudeLongitude(dest)
+		).then(function (addressOne, addressTwo) {
 			$.when(
-				searchTripUpdateForFastestRoute(temp1,  temp2)
-			).then(function(result){
-				console.log(temp1);
-				makeRoute(result, temp1, temp2);
+				findNearestStop(addressOne.geometry.location),
+				findNearestStop(addressTwo.geometry.location)
+			).then(function(r1, r2) {
+				temp1 = r1;
+				temp2 = r2;
+				$.when(
+					searchTripUpdateForFastestRoute(temp1,  temp2)
+				).then(function(result){
+					if(result){
+						makeRoute(result, temp1, temp2);
+					} else {
+						popAlert("bad", "We could not find a route...");
+						currentOrigin = null;
+						currentDestination = null;
+						currentTripID = null;
+						pickupTime = null;
+						dropoffTime = null;
+					}
+				});
 			});
 		});
-	});
+	}
 }
 
 function containsStops(object, start, dest){
 	var startFound = false;
 	var destFound = false;
+	var departure;
 	var arrival;
 	var result;
 	for(var i = 0; i < object.length; i++){
 		if(object[i].stop_id == start){
 			startFound = true;
+			departure = object[i].departure.time;
+			pickupTime = departure;
 		}
 		if(object[i].stop_id == dest){
 			destFound = true;
 			arrival = object[i].arrival.time;
+			dropoffTime = arrival;
 		}
 	}
 	if(startFound && destFound && (arrival != null)){
@@ -312,7 +358,6 @@ function containsStops(object, start, dest){
 	} else{
 		result = 0;
 	}
-
 	return result;
 }
 
@@ -326,22 +371,22 @@ function findFastest(promises){
 		jsonTrips = jQuery.parseJSON(JSON.stringify(data));
 		$.when(promises)
 	  	.then(function(results){
-	  		console.log(results)
+	  		console.log(results);
 	  		results.forEach(function(result){
 	  			if(result != 0 && comparison == null){
 	  				comparison = result;
 	  				temp = jsonTrips.entity[count].id;
 	  			}
 	  			else if(result != 0 && result < comparison){
-					temp = jsonTrips.entity[count].id;
 					comparison = result;
+					temp = jsonTrips.entity[count].id;
 				}
 				count++;
 	  		});
 			final.resolve(temp);
+			currentTripID = temp;
 	  	});
 	  });
-
   	return final.promise();
 }
 
@@ -365,7 +410,6 @@ function searchTripUpdateForFastestRoute(origin, dest){
 	console.log("searchTripUpdate() -> 4");
 	var final = $.Deferred();
 	var promises = [];	
-	
 	$.when(
 		fillPromises(origin, dest)
 	).then(function(promises){
@@ -428,10 +472,35 @@ function getStopLocation(stopID){
 	return temp;
 }
 
+function findTimes(tripid, origin, destination) {
+	var temp;
+	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data) {
+		var entities = jQuery.parseJSON(JSON.stringify(data)).entity;
+		for(var i = 0; i < entities.length; i++){
+			if(entities[i].id == tripid){
+				temp = entities[i].trip_update.stop_time_update;
+			}
+		}
+		for(var j = 0; j < temp.length; j++){
+			if(temp[j].stop_id == origin){
+				pickupTime = temp[j].departure.time;
+			}
+			if(temp[j].stop_id == destination){
+				dropoffTime = temp[j].arrival.time;
+			}
+		}
+	});
+}
+
 function getWaypoints(routeId, origin, destination){
 	console.log("TRIP ID -> " + routeId);
 	console.log("ORIGIN ID -> " + origin);
 	console.log("DEST ID -> " + destination);
+
+	findTimes(routeId, origin, destination);
+	currentOrigin = origin;
+	currentDestination = destination;
+	
 	var final = $.Deferred();
 	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data) {
 		var entities = jQuery.parseJSON(JSON.stringify(data)).entity;
@@ -450,9 +519,9 @@ function getWaypoints(routeId, origin, destination){
 			return stop.stop_id == destination;
 		});
 
-		console.log("start: " + startIndex)
-		console.log("end: " + endIndex)
-		console.dir(entity)
+		console.log("Start index -> " + startIndex);
+		console.log("End index -> " + endIndex);
+		console.dir(entity);
 
 		var temp;
 		for(var i = startIndex; i <= endIndex; i++){
@@ -478,7 +547,7 @@ function paintRouteOnMap(origin, destination){
 	var directionsService = new google.maps.DirectionsService();
 	var request;
 	var polylineProps = {
-		strokeColor: '#009933',
+		strokeColor: '#3F51B5',
 		strokeOpacity: 1.0,
 		strokeWeight: 10
 	};
@@ -508,7 +577,23 @@ function paintRouteOnMap(origin, destination){
 	    	}
 		});
 	});
-	console.log("DONE???");
+	popAlert("good", "A route has been found!");
+	showTripInfo();
+}
+
+function showTripInfo(){
+	console.log(pickupTime);
+	console.log(dropoffTime);
+	var temp = document.getElementById("routeInfo1");
+	var temp2 = document.getElementById("routeInfo2");
+	var first =  "from " + currentOrigin + " to " + currentDestination + "<br>" + (new Date(pickupTime * 1000)).toLocaleString() + " pickup<br>" + (new Date(dropoffTime * 1000)).toLocaleString() + " dropoff<br>";
+	var tempTime = ((dropoffTime * 1000) -(pickupTime * 1000))/1000/60 >> 0;
+	var second = tempTime +  " min(s)<br>"
+
+	temp.innerHTML = first;
+	temp2.innerHTML = second;
+	document.getElementById("infoPane").style.display = "block";
+	document.getElementById("cancelButton").style.display = "block";
 }
 
 function makeRoute(tripid, origin, destination) {
