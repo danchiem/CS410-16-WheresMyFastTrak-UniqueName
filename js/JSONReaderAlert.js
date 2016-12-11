@@ -34,11 +34,33 @@ function alerts()
 				            '</p>'+
 			            '</div>'+
 		            	'</div>';
-	return bsinfo;
+	return alertInfo;
 
 	setTimeout("alerts()",30000);
 };
 
 function toTimeString(seconds) {
   return (new Date(seconds * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0];
+}
+
+
+//routeId must be a string
+function checkAlertOnRoute(routeId) {
+    var result;
+
+    //Make it so that it only does this is alert is not empty
+    if(routeId == alertToPost.entity.alert.informed_entity.route_id) {
+    	result = 	'<div is ="content">'+
+    				'<div id="siteNotice">'+
+			           	'</div>'+
+			          	'<h1 id="firstHeading" class="firstHeading">'+ alertToPost.entity.alert.header_text.text +'</h1>'+
+			           	'<div id="bodyContent">' +
+				            '<p>' +
+					    	   	'Description: ' + alertToPost.entity.alert.description_text.text + '<br>' +
+					      	   	'End Time: ' + toTimeString( alertToPost.entity.alert.active_period.end ) +'<br>' 
+				            '</p>'+
+			            '</div>'+
+		            	'</div>';
+    }
+	return result;
 }
