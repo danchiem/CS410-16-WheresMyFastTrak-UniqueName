@@ -21,6 +21,7 @@ function alerts()
 
 	});
 
+	//Form the division for display
 	var alertInfo = 	'<div id="content">'+
 			            '<div id="siteNotice">'+
 			           	'</div>'+
@@ -39,16 +40,17 @@ function alerts()
 	setTimeout("alerts()",30000);
 };
 
+//Function made for easy conversion of seconds to current date
 function toTimeString(seconds) {
   return (new Date(seconds * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0];
 }
 
 
-//routeId must be a string
+//
 function checkAlertOnRoute(routeId) {
     var result;
 
-    //Make it so that it only does this is alert is not empty
+    //Make it so that it only does this if alert is not empty
     if(routeId == alertToPost.entity.alert.informed_entity.route_id) {
     	result = 	'<div is ="content">'+
     				'<div id="siteNotice">'+
