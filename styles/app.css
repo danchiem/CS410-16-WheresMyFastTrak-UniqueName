@@ -171,6 +171,7 @@ input[type="text"]:focus{
 
 .alert__neutral {
   background:  #FFC107;
+  color: black;
   display: none;
 }
 
@@ -181,7 +182,7 @@ input[type="text"]:focus{
 
 .information_pane{
   width: 100%;
-  padding: 10px;
+  padding: 5px;
   border: 1px solid white;
   border-radius: 2px;
   color: white;
@@ -189,7 +190,6 @@ input[type="text"]:focus{
   display:  flex;
   justify-content: space-between;
   align-items: center;
-  flex-direction:  row;
   margin: 10px;
   display: none;
 }

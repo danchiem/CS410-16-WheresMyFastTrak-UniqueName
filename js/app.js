@@ -289,7 +289,7 @@ function getVehicleInfo(thisMap){
 				            '<div id="bodyContent">'+
 				            '<p>'+
 				            'Vehicle Position (Lat/Long): ' + vehicles[i][1] + ' / ' + vehicles[i][1] + '<br>' +
-				            'Timestamp: ' + vehicles[i][3] + '<br>' +
+				            'Timestamp: ' + new Date(vehicles[i][3] * 1000).toLocaleString() + '<br>' +
 				            'Route ID: ' + vehicles[i][4] + '<br>' +
 				            'Trip ID: ' + vehicles[i][5] + '<br>' +
 				            '</p>'+
@@ -314,6 +314,7 @@ function getVehicleInfo(thisMap){
 			}(i));
 			google.maps.event.addListener(busmarkers[i], 'click', function(innerKey) {
 				return function() {
+					popAlert("neutral", "Gathering vehicle information...");
 					showVehicleRoute(innerKey);
 				}
 			}(i));
@@ -604,7 +605,6 @@ function getWaypoints(routeId, origin, destination){
 
 		console.log("Start index -> " + startIndex);
 		console.log("End index -> " + endIndex);
-		console.dir(entity);
 
 		var temp;
 		for(var i = startIndex; i <= endIndex; i++){
@@ -654,8 +654,8 @@ function paintRouteOnMap(waypoints, origin, destination){
 			request = {
 		        origin: result1,
 		        destination: result2,
-		        waypoints: waypoints, //an array
-		        optimizeWaypoints: false, //false to use the order specified.
+		        waypoints: waypoints,
+		        optimizeWaypoints: false,
 		        travelMode: google.maps.DirectionsTravelMode.DRIVING
 	    	};
 	    	directionsService.route(request, function(response, status) {
@@ -663,6 +663,8 @@ function paintRouteOnMap(waypoints, origin, destination){
 		        	directionDisplay.setDirections(response);
 		        	popAlert("good", "A route has been found!");
 					showTripInfo();
+					var temp = (pickupTime * 1000) - Date.now();
+					window.setTimeout(busIsHere, temp);
 		    	}
 		    	else {
 		    		popAlert("bad", "Could not create the route.");
@@ -680,6 +682,7 @@ function paintRouteOnMap(waypoints, origin, destination){
     	directionsService.route(request, function(response, status) {
 	    	if (status == google.maps.DirectionsStatus.OK) {
 	        	directionDisplay.setDirections(response);
+	        	popAlert("good", "Vehicle route has been found.");
 	    	}
 	    	else {
 	    		popAlert("bad", "Could not create the route.");
@@ -693,9 +696,11 @@ function showTripInfo(){
 	console.log(dropoffTime);
 	var temp = document.getElementById("routeInfo1");
 	var temp2 = document.getElementById("routeInfo2");
-	var first =  "from " + currentOrigin + " to " + currentDestination + "<br>" + (new Date(pickupTime * 1000)).toLocaleString() + " pickup<br>" + (new Date(dropoffTime * 1000)).toLocaleString() + " dropoff<br>";
-	var tempTime = ((dropoffTime * 1000) -(pickupTime * 1000))/1000/60 >> 0;
-	var second = tempTime +  " min(s)<br>"
+	var pickup = (new Date(pickupTime * 1000)).getHours() + ":" + (new Date(pickupTime * 1000)).getMinutes() + " PM";
+	var dropoff = (new Date(dropoffTime * 1000)).getHours() + ":" + (new Date(dropoffTime * 1000)).getMinutes() + " PM";
+	var first =  "from " + currentOrigin + " to " + currentDestination + "<br>" + pickup + " pickup<br>" + dropoff + " dropoff<br>";
+	var tempTime = ((dropoffTime * 1000) - (pickupTime * 1000)) / 1000 / 60 >> 0;
+	var second = tempTime +  " min(s)<br>";
 
 	temp.innerHTML = first;
 	temp2.innerHTML = second;
@@ -716,6 +721,12 @@ function makeRoute(tripid, origin, destination) {
 			paintRouteOnMap(result, origin, destination);
 		}
 	});
+}
+
+function busIsHere(){
+	if(currentTripID != null) {
+		popAlert("good", "Bus is here!");
+	}
 }
 
 function getLatitudeLongitude(address) {
