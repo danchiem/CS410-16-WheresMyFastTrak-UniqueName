@@ -5,6 +5,7 @@ var currentDestination;
 var tripStatus;
 var pickupTime;
 var dropoffTime;
+var alertToPost;
 
 $('#searchRoute').submit(function(e) {
 	e.preventDefault();
@@ -92,6 +93,9 @@ function initMap(){
 	popAlert("neutral", "Loading bus stops...");
 	loadBusStops(map);
 	getVehicleInfo(map);
+	var alerts = alertsToDisplay();
+	if(alerts != null)
+		popAlert("neutral", alerts);
 	setInterval(updatePositions, 30000);
 }
 
@@ -351,6 +355,75 @@ function paintVehicleRoute(object){
 		paintRouteOnMap(waypoints, waypoints[0].location, waypoints[waypoints.length - 1].location);
 	}
 }
+
+/**
+* METHODS FOR ALERTS
+*/
+function alertsToDisplay()
+{
+	var jsonObjectAlert;
+	jQuery.getJSON("http://65.213.12.244/realtimefeed/alert/alerts.json",
+	 function(data){
+		jsonObjectAlert = jQuery.parseJSON(JSON.stringify(data));
+		console.log(jsonObjectAlert);
+
+		var seconds = new Date().getTime() / 1000;
+		if(jsonObjectAlert.entity.length != 0) {
+			for(var i = 0; i , jsonObjectAlert.entity.length; i++) {
+				if(seconds < jsonObjectAlert.entity.alert.active_period.end  && jsonObjectAlert.entity.alert.header_text.text !== alertToPost.entity.alert.header_text.text) {
+
+					//for now do nothing
+
+				} else {
+					alertToPost[i] = jsonObjectAlert.entity[i];
+				}
+			}
+		}
+	});
+
+	var alertInfo = null;
+	//Form the division for display
+	if(alertToPost != undefined) {
+		if(alertToPost.length != 0) {
+			for(var i = 0; i < alertToPost.length; i++) {
+				alertInfo = 	alertToPost[i].alert.header_text.text +
+								'\nDescription: ' + alertToPost[i].alert.description_text.text +
+								'\nStop ID: ' + alertToPost[i].alert.informed_entity.stop_id + 
+								'\nRoute ID: ' + alertToPost[i].alert.informed_entity.route_id +
+								'\nStart/End Time: ' + toTimeString( alertToPost[i].alert.active_period.start ) +
+							   	' / ' + toTimeString( alertToPost[i].alert.active_period.end );
+			}
+		}
+	}
+
+	if(alertInfo != null) {
+		return alertInfo;
+	}else {
+		return null;
+	}
+}
+
+//Function made for easy conversion of seconds to current date
+function toTimeString(seconds) {
+  return (new Date(seconds * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0];
+}
+
+function checkAlertOnRoute(routeId) {
+    var result = null;
+    if(alertToPost != undefined) {
+	    if(alertToPost.length != 0) {
+	   		for(var i = 0; i < alertToPost.length; i++) {
+		    	if(routeId == alertToPost.entity.alert.informed_entity.route_id) {
+		    		result = 	alertToPost.entity.alert.header_text.text +
+		    		'\nDescription: ' + alertToPost.entity.alert.description_text.text + 
+		    		'\nEnd Time: ' + toTimeString( alertToPost.entity.alert.active_period.end );
+		    	}
+	    	}
+	    }
+	}
+	return result;
+}
+
 
 /**
  * METHODS FOR ROUTE FINDING BELOW

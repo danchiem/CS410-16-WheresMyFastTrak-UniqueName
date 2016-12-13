@@ -21,24 +21,23 @@ function alerts()
 
 	});
 
+	var alertInfo = null;
 	//Form the division for display
-	var alertInfo = 	'<div id="content">'+
-			            '<div id="siteNotice">'+
-			           	'</div>'+
-			          	'<h1 id="firstHeading" class="firstHeading">'+ alertToPost.entity.alert.header_text.text +'</h1>'+
-			           	'<div id="bodyContent">' +
-				            '<p>' +
-					    	   	'Description: ' + alertToPost.entity.alert.description_text.text + '<br>' +
-					       	   	'Stop ID: ' + alertToPost.entity.alert.informed_entity.stop_id + '<br>' +
-					      	   	'Route ID: ' + alertToPost.entity.alert.informed_entity.route_id + '<br>' +
-					      	   	'Start/End Time: ' + toTimeString( alertToPost.entity.alert.active_period.start ) + ' / ' + toTimeString( alertToPost.entity.alert.active_period.end ) +'<br>' 
-				            '</p>'+
-			            '</div>'+
-		            	'</div>';
-	return alertInfo;
+	if(alertToPost.entity != null) {
+		alertInfo = 	alertToPost.entity.alert.header_text.text +
+						 	'\nDescription: ' + alertToPost.entity.alert.description_text.text +
+						   	'\nStop ID: ' + alertToPost.entity.alert.informed_entity.stop_id + 
+						   	'\nRoute ID: ' + alertToPost.entity.alert.informed_entity.route_id +
+						   	'\nStart/End Time: ' + toTimeString( alertToPost.entity.alert.active_period.start ) +
+					   		' / ' + toTimeString( alertToPost.entity.alert.active_period.end );
+	}
 
-	setTimeout("alerts()",30000);
-};
+	if(alertInfo != null) {
+		return alertInfo;
+	}else {
+		return null;
+	}
+}
 
 //Function made for easy conversion of seconds to current date
 function toTimeString(seconds) {
@@ -50,19 +49,12 @@ function toTimeString(seconds) {
 function checkAlertOnRoute(routeId) {
     var result;
 
-    //Make it so that it only does this if alert is not empty
-    if(routeId == alertToPost.entity.alert.informed_entity.route_id) {
-    	result = 	'<div is ="content">'+
-    				'<div id="siteNotice">'+
-			           	'</div>'+
-			          	'<h1 id="firstHeading" class="firstHeading">'+ alertToPost.entity.alert.header_text.text +'</h1>'+
-			           	'<div id="bodyContent">' +
-				            '<p>' +
-					    	   	'Description: ' + alertToPost.entity.alert.description_text.text + '<br>' +
-					      	   	'End Time: ' + toTimeString( alertToPost.entity.alert.active_period.end ) +'<br>' 
-				            '</p>'+
-			            '</div>'+
-		            	'</div>';
+   if(alertToPost.entity != null) {
+    	if(routeId == alertToPost.entity.alert.informed_entity.route_id) {
+    		result = 	alertToPost.entity.alert.header_text.text +
+    		'\nDescription: ' + alertToPost.entity.alert.description_text.text + 
+    		'\nEnd Time: ' + toTimeString( alertToPost.entity.alert.active_period.end );
+    	}
     }
 	return result;
 }
