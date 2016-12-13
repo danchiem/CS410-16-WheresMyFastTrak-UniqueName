@@ -155,18 +155,33 @@ function loadLocalBusstop(thisMap){
 	});
 }
 
-function loadRealTimeBusstop(thisMap){
-	$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data){
-		jsonTrips = jQuery.parseJSON(JSON.stringify(data));
-		var count = 0;
-		for (var l = 0; l < jsonTrips.entity.length; l++){
-			for (var k = 0; k < jsonTrips.entity[l].trip_update.stop_time_update.length; k++){
-				tempRealTimeStops[count] =  jsonTrips.entity[l].trip_update.stop_time_update[k].stop_id;
-				count++;
+function loadRealTimeBusstop(thisMap) {
+	var now = new Date();
+	if (! localStorage.stops || now > Date.parse(localStorage.expire)) {
+		console.log("caching new results")
+		$.getJSON("http://65.213.12.244/realtimefeed/tripupdate/tripupdates.json", function(data) {
+			jsonTrips = jQuery.parseJSON(JSON.stringify(data));
+			var count = 0;
+			for (var l = 0; l < jsonTrips.entity.length; l++){
+				for (var k = 0; k < jsonTrips.entity[l].trip_update.stop_time_update.length; k++){
+					tempRealTimeStops[count] =  jsonTrips.entity[l].trip_update.stop_time_update[k].stop_id;
+					count++;
+				}
 			}
-		}
-		loadSimilarBusstops(thisMap);
-	});
+
+			localStorage.stops = JSON.stringify(tempRealTimeStops);
+			localStorage.expire = new Date(now.getTime() + 30 * 60000);
+			loadSimilarBusstops(thisMap);
+		});
+	} else {
+		var getCache = function () {
+			console.log("using cached data");
+			tempRealTimeStops = JSON.parse(localStorage.stops);
+			loadSimilarBusstops(thisMap);
+		};
+
+		getCache();
+	}
 }
 
 function loadSimilarBusstops(thisMap){
